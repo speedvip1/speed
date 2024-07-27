@@ -31,6 +31,5 @@ local Image = AddImageLabel(Main, {
   Name = "speed-wave",
   Image = "rbxassetid://18393252027"
 })
-local Paragraph = AddParagraph(Main, {"إذا عندك مشكلة", "bom dia meus manos"})
 local Paragraph = AddParagraph(Main, {"تعال على تيليجرام", "bom dia meus manos"})
 local Paragraph = AddParagraph(Main, {"نسخ رابط ", "bom dia meus manos"})
