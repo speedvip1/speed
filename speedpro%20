@@ -1,0 +1,36 @@
+loadstring(game:HttpGet(("https://raw.githubusercontent.com/REDzHUB/LibraryV2/main/redzLib")))()
+MakeWindow({
+  Hub = {
+    Title = "speed-wave | Broohkaven RP | 1.3",
+    Animation = "مطور السكربت يوسف"
+  },
+  Key = {
+    KeySystem = false,
+    Title = "Key System",
+    Description = "",
+    KeyLink = "",
+    Keys = {"1234"},
+    Notifi = {
+      Notifications = true,
+      CorrectKey = "Running the Script...",
+      Incorrectkey = "The key is incorrect",
+      CopyKeyLink = "Copied to Clipboard"
+    }
+  }
+})
+MinimizeButton({
+  Image = "rbxassetid://18393252027",
+  Size = {50, 50},
+  Color = Color3.fromRGB(10, 10, 10),
+  Corner = true,
+  Stroke = false,
+  StrokeColor = Color3.fromRGB(255, 0, 0)
+})
+local Main = MakeTab({Name = "Home"})
+local Image = AddImageLabel(Main, {
+  Name = "speed-wave",
+  Image = "rbxassetid://18393252027"
+})
+local Paragraph = AddParagraph(Main, {"إذا عندك مشكلة", "bom dia meus manos"})
+local Paragraph = AddParagraph(Main, {"تعال على تيليجرام", "bom dia meus manos"})
+local Paragraph = AddParagraph(Main, {"نسخ رابط ", "bom dia meus manos"})
