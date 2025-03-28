@@ -1576,7 +1576,7 @@ function MakeWindow(Configs)
       TextXAlignment = "Left",
       BackgroundTransparency = 1,
       Position = UDim2.new(0, 12, 0, 0),
-      TextColor3 = Color3.fromRGB(5, 5, 255),
+      TextColor3 = Color3.fromRGB(255, 255, 255),
       Font = Enum.Font.GothamBold,
       TextSize = 14
     })
