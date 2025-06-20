@@ -1560,69 +1560,211 @@ function MakeWindow(Configs)
   
   function AddDiscord(parent, Configs)
     local DiscordLink = Configs[1] or Configs.DiscordLink or "https://discord.gg/"
-    local DiscordIcon = Configs[2] or Configs.DiscordIcon or "rbxassetid://"
-    local DiscordTitle = Configs[3] or Configs.DiscordTitle or ""
+    local DiscordIcon = Configs[2] or Configs.DiscordIcon or "rbxassetid://7733779610"
+    local DiscordTitle = Configs[3] or Configs.DiscordTitle or "Join Our Discord Server"
+    local DiscordDescription = Configs[4] or Configs.DiscordDescription or "Connect with our community!"
     
+    -- Main Frame with gradient background
     local Frame = Create("Frame", parent, {
-      Size = UDim2.new(1, 0, 0, 110),
-      BackgroundColor3 = Color3.fromRGB(40, 40, 40),
-      Name = "Frame",
-      AutomaticSize = "Y"
-    })
-
-    local LinkLabel = Create("TextLabel", Frame, {
-      Size = UDim2.new(1, 0, 0, 25),
-      Text = DiscordLink,
-      TextXAlignment = "Left",
-      BackgroundTransparency = 1,
-      Position = UDim2.new(0, 12, 0, 0),
-      TextColor3 = Color3.fromRGB(255, 255, 255),
-      Font = Enum.Font.GothamBold,
-      TextSize = 14
+        Size = UDim2.new(1, 0, 0, 140),
+        BackgroundColor3 = Color3.fromRGB(32, 34, 37),
+        Name = "DiscordFrame",
+        AutomaticSize = "Y",
+        ClipsDescendants = true
     })
     
+    -- Add gradient background
+    local Gradient = Create("UIGradient", Frame, {
+        Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(32, 34, 37)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(47, 49, 54))
+        },
+        Rotation = 45
+    })
+    
+    -- Add corner radius
+    local FrameCorner = Create("UICorner", Frame, {
+        CornerRadius = UDim.new(0, 12)
+    })
+    
+    -- Add subtle border
+    local Border = Create("UIStroke", Frame, {
+        Color = Color3.fromRGB(114, 137, 218),
+        Thickness = 2,
+        Transparency = 0.8
+    })
+    
+    -- Discord Icon with better styling
+    local IconFrame = Create("Frame", Frame, {
+        Size = UDim2.new(0, 50, 0, 50),
+        Position = UDim2.new(0, 15, 0, 15),
+        BackgroundColor3 = Color3.fromRGB(114, 137, 218),
+        BackgroundTransparency = 0.1
+    })
+    
+    local IconCorner = Create("UICorner", IconFrame, {
+        CornerRadius = UDim.new(0, 8)
+    })
+    
+    local IconLabel = Create("ImageLabel", IconFrame, {
+        Size = UDim2.new(0, 35, 0, 35),
+        Position = UDim2.new(0.5, 0, 0.5, 0),
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Image = DiscordIcon,
+        BackgroundTransparency = 1,
+        ImageColor3 = Color3.fromRGB(255, 255, 255)
+    })
+    
+    -- Title Label with better typography
     local TitleLabel = Create("TextLabel", Frame, {
-      Size = UDim2.new(1, 0, 0, 25),
-      Text = DiscordTitle,
-      TextXAlignment = "Left",
-      BackgroundTransparency = 1,
-      Position = UDim2.new(0, 60, 0, 25),
-      TextColor3 = Color3.fromRGB(255 255, 255),
-      Font = Enum.Font.GothamBold,
-      TextSize = 14
+        Size = UDim2.new(1, -80, 0, 25),
+        Text = DiscordTitle,
+        TextXAlignment = "Left",
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 75, 0, 15),
+        TextColor3 = Color3.fromRGB(255, 255, 255),
+        Font = Enum.Font.GothamBold,
+        TextSize = 16,
+        TextScaled = true
     })
     
-    local IconLabel = Create("ImageLabel", Frame, {
-      Size = UDim2.new(0, 40, 0, 40),
-      AnchorPoint = Vector2.new(0, 0.5),
-      Position = UDim2.new(0, 12, 0.45, 0),
-      Image = DiscordIcon
-    })Corner(IconLabel)
+    -- Description Label
+    local DescLabel = Create("TextLabel", Frame, {
+        Size = UDim2.new(1, -80, 0, 20),
+        Text = DiscordDescription,
+        TextXAlignment = "Left",
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 75, 0, 40),
+        TextColor3 = Color3.fromRGB(185, 187, 190),
+        Font = Enum.Font.Gotham,
+        TextSize = 12,
+        TextScaled = true
+    })
     
+    -- Discord Link Label with better styling
+    local LinkLabel = Create("TextLabel", Frame, {
+        Size = UDim2.new(1, -30, 0, 20),
+        Text = DiscordLink,
+        TextXAlignment = "Left",
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 15, 0, 75),
+        TextColor3 = Color3.fromRGB(114, 137, 218),
+        Font = Enum.Font.GothamMedium,
+        TextSize = 11,
+        TextScaled = true
+    })
+    
+    -- Enhanced Join Button
     local JoinButton = Create("TextButton", Frame, {
-      Size = UDim2.new(1, -24, 0, 25),
-      AnchorPoint = Vector2.new(0.5, 1),
-      Position = UDim2.new(0.5, 0, 1, -8),
-      Text = "نسخ الرابط",
-      Font = Enum.Font.GothamBold,
-      TextSize = 15,
-      TextColor3 = Color3.fromRGB(220, 220, 220),
-      BackgroundColor3 = Color3.fromRGB(50, 200, 50)
-    })Corner(IconLabel)
+        Size = UDim2.new(1, -30, 0, 35),
+        Position = UDim2.new(0, 15, 1, -45),
+        Text = "🚀 Join Server",
+        Font = Enum.Font.GothamBold,
+        TextSize = 14,
+        TextColor3 = Color3.fromRGB(255, 255, 255),
+        BackgroundColor3 = Color3.fromRGB(114, 137, 218),
+        AutoButtonColor = false
+    })
     
-    local time = tick()
-    ClickConter = 0
-    JoinButton.MouseButton1Click:Connect(function()
-      if ClickConter == 0 or tick() - time > 5 then time = tick() setclipboard(DiscordLink) ClickConter = ClickConter + 1
-        JoinButton.Text = "تم النسخ ✅"
-        JoinButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-        JoinButton.TextColor3 = Color3.fromRGB(150, 150, 150)
-        task.wait(5)
-        JoinButton.Text = "Join"
-        JoinButton.BackgroundColor3 = Color3.fromRGB(50, 200, 50)
-        JoinButton.TextColor3 = Color3.fromRGB(220, 220, 220)
-      end
+    local ButtonCorner = Create("UICorner", JoinButton, {
+        CornerRadius = UDim.new(0, 8)
+    })
+    
+    -- Button gradient
+    local ButtonGradient = Create("UIGradient", JoinButton, {
+        Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(114, 137, 218)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(103, 123, 196))
+        },
+        Rotation = 90
+    })
+    
+    -- Button animations and interactions
+    local TweenService = game:GetService("TweenService")
+    local ButtonTweenInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    
+    -- Hover effects
+    JoinButton.MouseEnter:Connect(function()
+        local hoverTween = TweenService:Create(JoinButton, ButtonTweenInfo, {
+            Size = UDim2.new(1, -28, 0, 37),
+            BackgroundColor3 = Color3.fromRGB(124, 147, 228)
+        })
+        hoverTween:Play()
+        
+        -- Update gradient on hover
+        ButtonGradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(124, 147, 228)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(113, 133, 206))
+        }
     end)
-  end
-  return Menu
+    
+    JoinButton.MouseLeave:Connect(function()
+        local leaveTween = TweenService:Create(JoinButton, ButtonTweenInfo, {
+            Size = UDim2.new(1, -30, 0, 35),
+            BackgroundColor3 = Color3.fromRGB(114, 137, 218)
+        })
+        leaveTween:Play()
+        
+        -- Reset gradient
+        ButtonGradient.Color = ColorSequence.new{
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(114, 137, 218)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(103, 123, 196))
+        }
+    end)
+    
+    -- Click functionality with better feedback
+    local time = tick()
+    local ClickCounter = 0
+    
+    JoinButton.MouseButton1Click:Connect(function()
+        if ClickCounter == 0 or tick() - time > 5 then 
+            time = tick() 
+            setclipboard(DiscordLink) 
+            ClickCounter = ClickCounter + 1
+            
+            -- Success animation
+            JoinButton.Text = "✅ Copied to Clipboard!"
+            local successTween = TweenService:Create(JoinButton, ButtonTweenInfo, {
+                BackgroundColor3 = Color3.fromRGB(67, 181, 129)
+            })
+            successTween:Play()
+            
+            ButtonGradient.Color = ColorSequence.new{
+                ColorSequenceKeypoint.new(0, Color3.fromRGB(67, 181, 129)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(57, 161, 109))
+            }
+            
+            -- Reset after delay
+            task.spawn(function()
+                task.wait(3)
+                JoinButton.Text = "🚀 Join Server"
+                local resetTween = TweenService:Create(JoinButton, ButtonTweenInfo, {
+                    BackgroundColor3 = Color3.fromRGB(114, 137, 218)
+                })
+                resetTween:Play()
+                
+                ButtonGradient.Color = ColorSequence.new{
+                    ColorSequenceKeypoint.new(0, Color3.fromRGB(114, 137, 218)),
+                    ColorSequenceKeypoint.new(1, Color3.fromRGB(103, 123, 196))
+                }
+            end)
+        end
+    end)
+    
+    -- Add subtle glow effect
+    local Glow = Create("ImageLabel", Frame, {
+        Size = UDim2.new(1, 20, 1, 20),
+        Position = UDim2.new(0, -10, 0, -10),
+        BackgroundTransparency = 1,
+        Image = "rbxasset://textures/ui/GuiImagePlaceholder.png",
+        ImageColor3 = Color3.fromRGB(114, 137, 218),
+        ImageTransparency = 0.9,
+        ZIndex = -1
+    })
+    
+    local GlowCorner = Create("UICorner", Glow, {
+        CornerRadius = UDim.new(0, 15)
+    })
+    
+    return Frame
 end
