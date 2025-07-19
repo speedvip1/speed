@@ -76,7 +76,8 @@ local TabContainer = Instance.new("Folder")
 local Items = Instance.new("ImageLabel")
 local TextLabel = Instance.new("TextLabel")
 
--- Properties
+--Properties:
+
 Screen.Name = "Roblox"
 Screen.Parent = game:WaitForChild("CoreGui")
 Screen.Enabled = true
@@ -160,18 +161,17 @@ Items.ScaleType = Enum.ScaleType.Slice
 Items.SliceCenter = Rect.new(100, 100, 100, 100)
 Items.SliceScale = 0.020
 
--- Toggle functionality
 local opened = true
 Toggle.MouseButton1Click:Connect(function()
-    if opened then
-        Main.Visible = false
-        Toggle.Rotation = 0
-        opened = false
-    else
-        Main.Visible = true
-        Toggle.Rotation = 90
-        opened = true
-    end
+			if opened then
+		Main.Visible = false
+		Toggle.Rotation = 0
+			opened = false
+		else
+			Main.Visible = true
+		Toggle.Rotation = 90
+		opened = true
+		    end
 end)
 
 local InsideLibrary = {}
@@ -182,145 +182,140 @@ function InsideLibrary:CreateTab(text)
     local UIGridLayout_2 = Instance.new("UIGridLayout")
     local UICorner = Instance.new("UICorner")
 
-    TextButton1.Name = text.." Button"
-    TextButton1.Parent = Tabs
-    TextButton1.BackgroundColor3 = Color3.fromRGB(32, 32, 32)
-    TextButton1.BackgroundTransparency = 1.000
-    TextButton1.Size = UDim2.new(0, 70, 0, 21)
-    TextButton1.Font = Enum.Font.SourceSansSemibold
-    TextButton1.Text = text
-    TextButton1.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TextButton1.TextSize = 14.000
+TextButton1.Name = text.." Button"
+TextButton1.Parent = Tabs
+TextButton1.BackgroundColor3 = Color3.fromRGB(32,32,32)
+TextButton1.BackgroundTransparency = 1.000
+TextButton1.Size = UDim2.new(0, 70, 0, 21)
+TextButton1.Font = Enum.Font.SourceSansSemibold
+TextButton1.Text = text
+TextButton1.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton1.TextSize = 14.000
 
-    Frame.Parent = Items
-    Frame.Active = true
-    Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    Frame.BackgroundTransparency = 1.000
-    Frame.BorderSizePixel = 0
-    Frame.Position = UDim2.new(0.0170000009, 0, 0.0359999985, 0)
-    Frame.Size = UDim2.new(0, 399, 0, 264)
-    Frame.CanvasSize = UDim2.new(0, 0, 1.1, 0)
-    Frame.ScrollBarImageColor3 = theme2
-    Frame.ScrollBarThickness = 7
+Frame.Parent = Items
+Frame.Active = true
+Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Frame.BackgroundTransparency = 1.000
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0.0170000009, 0, 0.0359999985, 0)
+Frame.Size = UDim2.new(0, 399, 0, 264)
+Frame.CanvasSize = UDim2.new(0, 0, 1.1,0)
+Frame.ScrollBarImageColor3 = theme2
+Frame.ScrollBarThickness = 7
 
-    UICorner.Parent = Frame
+UICorner.Parent = Frame
 
-    UIGridLayout_2.Parent = Frame
-    UIGridLayout_2.FillDirection = Enum.FillDirection.Vertical
-    UIGridLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
-    UIGridLayout_2.CellSize = UDim2.new(0, 70, 0, 23)
-    UIGridLayout_2.StartCorner = Enum.StartCorner.TopRight
+UIGridLayout_2.Parent = Frame
+UIGridLayout_2.FillDirection = Enum.FillDirection.Vertical
+UIGridLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+UIGridLayout_2.CellSize = UDim2.new(0, 70, 0, 23)
+UIGridLayout_2.StartCorner = Enum.StartCorner.TopRight
 
-    Frame.ChildAdded:Connect(function()
-        if #Frame:GetChildren() > 13 then
-            Frame.CanvasSize = UDim2.new(0, 0, Frame.CanvasSize.Y.Scale + 0.10, 0)
-        end
-    end)
-
-    TextButton1.MouseButton1Click:Connect(function()
-        for i, v in next, Items:GetChildren() do
-            v.Visible = false
-        end
-        
-        for i, t in next, Tabs:GetChildren() do
-            if t.ClassName ~= "UIGridLayout" then
-                t.TextColor3 = Color3.fromRGB(255, 255, 255)
-            end
-            TextButton1.TextColor3 = theme3
-        end
-        
-        Frame.Visible = true
-        play("rbxassetid://1412830636")
-    end)
-
-    local InsideTab = {}
-
-    function InsideTab:CreateDropdown(text, list, callback)
-        local BodyYSize = 0
-        local IsDropped = false
-        callback = callback or function() end
-        list = list or {}
-        text = text or "Dropdown"
-        
-        local Dropdown = Instance.new("TextLabel")
-        local TextButton = Instance.new("TextButton")
-        local TextButton_Roundify_2px_2 = Instance.new("ImageLabel")
-        local DropdownContainer = Instance.new("ImageLabel")
-        local UIListLayout_2 = Instance.new("UIListLayout")
-
-        Dropdown.Name = "Dropdown"
-        Dropdown.Parent = Frame
-        Dropdown.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        Dropdown.BackgroundTransparency = 1.000
-        Dropdown.Size = UDim2.new(0, 200, 0, 50)
-        Dropdown.Font = Enum.Font.SourceSansSemibold
-        Dropdown.Text = text
-        Dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
-        Dropdown.TextSize = 14.000
-
-        TextButton.Parent = Dropdown
-        TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        TextButton.BackgroundTransparency = 1.000
-        TextButton.BorderColor3 = Color3.fromRGB(27, 42, 53)
-        TextButton.BorderSizePixel = 0
-        TextButton.Position = UDim2.new(1, 0, 0, 0)
-        TextButton.Size = UDim2.new(0, 31, 0, 27)
-        TextButton.ZIndex = 2
-        TextButton.Font = Enum.Font.SourceSansBold
-        TextButton.Text = "+"
-        TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-        TextButton.TextSize = 14.000
-
-        TextButton_Roundify_2px_2.Name = "TextButton_Roundify_2px"
-        TextButton_Roundify_2px_2.Parent = TextButton
-        TextButton_Roundify_2px_2.Active = true
-        TextButton_Roundify_2px_2.AnchorPoint = Vector2.new(0.5, 0.5)
-        TextButton_Roundify_2px_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-        TextButton_Roundify_2px_2.BackgroundTransparency = 1.000
-        TextButton_Roundify_2px_2.Position = UDim2.new(0.5, 0, 0.5, 0)
-        TextButton_Roundify_2px_2.Selectable = true
-        TextButton_Roundify_2px_2.Size = UDim2.new(1, 0, 1, 0)
-        TextButton_Roundify_2px_2.Image = "rbxassetid://3570695787"
-        TextButton_Roundify_2px_2.ImageColor3 = theme2
-        TextButton_Roundify_2px_2.ScaleType = Enum.ScaleType.Slice
-        TextButton_Roundify_2px_2.SliceCenter = Rect.new(100, 100, 100, 100)
-        TextButton_Roundify_2px_2.SliceScale = 0.020
-
-        TextButton.MouseButton1Click:Connect(function()
-            play("rbxassetid://178104975")
-            if not IsDropped then
-                IsDropped = true
-                TextButton.TextColor3 = theme3
-                DropdownContainer.Visible = true
-            else
-                IsDropped = false
-                TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-                DropdownContainer.Visible = false
-            end
-        end)
-
-        for i, v in pairs(list) do
-            BodyYSize = BodyYSize + 27
-            local TextButton_2 = Instance.new("TextButton")
-            
-            TextButton_2.Parent = DropdownContainer
-            TextButton_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            TextButton_2.BackgroundTransparency = 1.000
-            TextButton_2.Size = UDim2.new(0, 197, 0, 27)
-            TextButton_2.Font = Enum.Font.SourceSansSemibold
-            TextButton_2.TextColor3 = Color3.fromRGB(255, 255, 255)
-            TextButton_2.Text = v
-            TextButton_2.TextSize = 14.000
-            TextButton_2.ZIndex = 4
-
-            TextButton_2.MouseButton1Click:Connect(function()
-                Dropdown.Text = v
-                callback(v)
-                IsDropped = false
-                DropdownContainer.Visible = false
-            end)
-        end
+Frame.ChildAdded:Connect(function()
+    if #Frame:GetChildren() > 13 then
+Frame.CanvasSize = UDim2.new(0, 0,Frame.CanvasSize.Y.Scale + 0.10,0)
     end
+end)
+
+
+TextButton1.MouseButton1Click:Connect(function()
+for i,v in next,Items:GetChildren() do
+v.Visible = false
+end
+for i,t in next, Tabs:GetChildren() do
+if t.ClassName ~= "UIGridLayout" then
+t.TextColor3 = Color3.fromRGB(255, 255, 255)
+end
+TextButton1.TextColor3 = theme3
+end
+Frame.Visible = true
+play("rbxassetid://1412830636")
+end)
+
+local InsideTab = {}
+
+function InsideTab:CreateDropdown(text, list, callback)
+    local BodyYSize = 0
+    local IsDropped = false
+    callback = callback or function() end
+    list = list or {}
+    text = text or "Dropdown"
+    local Dropdown = Instance.new("TextLabel")
+local TextButton = Instance.new("TextButton")
+local TextButton_Roundify_2px_2 = Instance.new("ImageLabel")
+local DropdownContainer = Instance.new("ImageLabel")
+local UIListLayout_2 = Instance.new("UIListLayout")
+
+Dropdown.Name = "Dropdown"
+Dropdown.Parent = Frame
+Dropdown.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Dropdown.BackgroundTransparency = 1.000
+Dropdown.Size = UDim2.new(0, 200, 0, 50)
+Dropdown.Font = Enum.Font.SourceSansSemibold
+Dropdown.Text = text
+Dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
+Dropdown.TextSize = 14.000
+
+TextButton.Parent = Dropdown
+TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.BackgroundTransparency = 1.000
+TextButton.BorderColor3 = Color3.fromRGB(27, 42, 53)
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(1, 0, 0, 0)
+TextButton.Size = UDim2.new(0, 31, 0, 27)
+TextButton.ZIndex = 2
+TextButton.Font = Enum.Font.SourceSansBold
+TextButton.Text = "+"
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.TextSize = 14.000
+
+TextButton_Roundify_2px_2.Name = "TextButton_Roundify_2px"
+TextButton_Roundify_2px_2.Parent = TextButton
+TextButton_Roundify_2px_2.Active = true
+TextButton_Roundify_2px_2.AnchorPoint = Vector2.new(0.5, 0.5)
+TextButton_Roundify_2px_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextButton_Roundify_2px_2.BackgroundTransparency = 1.000
+TextButton_Roundify_2px_2.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextButton_Roundify_2px_2.Selectable = true
+TextButton_Roundify_2px_2.Size = UDim2.new(1, 0, 1, 0)
+TextButton_Roundify_2px_2.Image = "rbxassetid://3570695787"
+TextButton_Roundify_2px_2.ImageColor3 = theme2
+TextButton_Roundify_2px_2.ScaleType = Enum.ScaleType.Slice
+TextButton_Roundify_2px_2.SliceCenter = Rect.new(100, 100, 100, 100)
+TextButton_Roundify_2px_2.SliceScale = 0.020
+
+TextButton.MouseButton1Click:Connect(function()
+    play("rbxassetid://178104975")
+    if not IsDropped then
+        IsDropped = true
+        TextButton.TextColor3 = theme3
+        DropdownContainer.Visible = true
+        else
+            IsDropped = false
+            TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        DropdownContainer.Visible = false
+        end
+    end)
+
+for i,v in pairs(list) do
+BodyYSize = BodyYSize + 27
+local TextButton_2 = Instance.new("TextButton")
+TextButton_2.Parent = DropdownContainer
+TextButton_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextButton_2.BackgroundTransparency = 1.000
+TextButton_2.Size = UDim2.new(0, 197, 0, 27)
+TextButton_2.Font = Enum.Font.SourceSansSemibold
+TextButton_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton_2.Text = v
+TextButton_2.TextSize = 14.000
+TextButton_2.ZIndex = 4
+
+TextButton_2.MouseButton1Click:Connect(function()
+    Dropdown.Text = v
+    callback(v)
+    IsDropped = false
+        DropdownContainer.Visible = false
+    end)
 end
 
 DropdownContainer.Name = "DropdownContainer"
