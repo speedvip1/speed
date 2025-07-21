@@ -29,38 +29,6 @@ local Themes = {
         Accent = Color3.fromRGB(176, 148, 255),
         Text = Color3.fromRGB(255, 255, 255),
         IsLight = false
-    },
-    
-    ["Blood"] = {
-        Primary = Color3.fromRGB(32, 32, 32),
-        Secondary = Color3.fromRGB(26, 26, 26),
-        Accent = Color3.fromRGB(138, 3, 3),
-        Text = Color3.fromRGB(255, 255, 255),
-        IsLight = false
-    },
-    
-    ["Ocean"] = {
-        Primary = Color3.fromRGB(32, 32, 32),
-        Secondary = Color3.fromRGB(26, 26, 26),
-        Accent = Color3.fromRGB(0, 119, 182),
-        Text = Color3.fromRGB(255, 255, 255),
-        IsLight = false
-    },
-    
-    ["Emerald"] = {
-        Primary = Color3.fromRGB(32, 32, 32),
-        Secondary = Color3.fromRGB(26, 26, 26),
-        Accent = Color3.fromRGB(68, 207, 108),
-        Text = Color3.fromRGB(255, 255, 255),
-        IsLight = false
-    },
-    
-    ["Light"] = {
-        Primary = Color3.fromRGB(245, 245, 245),
-        Secondary = Color3.fromRGB(255, 255, 255),
-        Accent = Color3.fromRGB(66, 135, 245),
-        Text = Color3.fromRGB(32, 32, 32),
-        IsLight = true
     }
 }
 
@@ -96,8 +64,8 @@ function Library:CreateWindow(windowName, themeName)
     MainFrame.Parent = ScreenGui
     MainFrame.BackgroundColor3 = currentTheme.Primary
     MainFrame.BorderSizePixel = 0
-    MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
-    MainFrame.Size = UDim2.new(0, 600, 0, 400)
+    MainFrame.Position = UDim2.new(0.5, -150, 0.5, -150)
+    MainFrame.Size = UDim2.new(0, 300, 0, 300)
     MainFrame.Active = true
     MainFrame.Draggable = true
     
@@ -109,7 +77,7 @@ function Library:CreateWindow(windowName, themeName)
     TopBar.Parent = MainFrame
     TopBar.BackgroundColor3 = currentTheme.Secondary
     TopBar.BorderSizePixel = 0
-    TopBar.Size = UDim2.new(1, 0, 0, 35)
+    TopBar.Size = UDim2.new(1, 0, 0, 30)
     
     local TopCorner = Instance.new("UICorner")
     TopCorner.CornerRadius = UDim.new(0, 8)
@@ -118,37 +86,37 @@ function Library:CreateWindow(windowName, themeName)
     Title.Name = "Title"
     Title.Parent = TopBar
     Title.BackgroundTransparency = 1
-    Title.Position = UDim2.new(0, 15, 0, 0)
-    Title.Size = UDim2.new(1, -50, 1, 0)
+    Title.Position = UDim2.new(0, 10, 0, 0)
+    Title.Size = UDim2.new(1, -40, 1, 0)
     Title.Font = Enum.Font.SourceSansBold
     Title.Text = windowName
     Title.TextColor3 = currentTheme.Text
-    Title.TextSize = 16
+    Title.TextSize = 14
     Title.TextXAlignment = Enum.TextXAlignment.Left
     
     ToggleButton.Name = "ToggleButton"
     ToggleButton.Parent = TopBar
     ToggleButton.BackgroundTransparency = 1
-    ToggleButton.Position = UDim2.new(1, -35, 0, 5)
-    ToggleButton.Size = UDim2.new(0, 25, 0, 25)
+    ToggleButton.Position = UDim2.new(1, -30, 0, 0)
+    ToggleButton.Size = UDim2.new(0, 30, 1, 0)
     ToggleButton.Font = Enum.Font.SourceSansBold
     ToggleButton.Text = "-"
     ToggleButton.TextColor3 = currentTheme.Text
-    ToggleButton.TextSize = 18
+    ToggleButton.TextSize = 16
     
     ContentFrame.Name = "ContentFrame"
     ContentFrame.Parent = MainFrame
     ContentFrame.BackgroundTransparency = 1
-    ContentFrame.Position = UDim2.new(0, 0, 0, 35)
-    ContentFrame.Size = UDim2.new(1, 0, 1, -35)
+    ContentFrame.Position = UDim2.new(0, 0, 0, 30)
+    ContentFrame.Size = UDim2.new(1, 0, 1, -30)
     
     TabContainer.Name = "TabContainer"
     TabContainer.Parent = ContentFrame
     TabContainer.BackgroundColor3 = currentTheme.Secondary
     TabContainer.BorderSizePixel = 0
-    TabContainer.Position = UDim2.new(0, 10, 0, 10)
-    TabContainer.Size = UDim2.new(0, 140, 1, -20) 
-    TabContainer.ClipsDescendants = true 
+    TabContainer.Position = UDim2.new(0, 5, 0, 5)
+    TabContainer.Size = UDim2.new(0, 290, 1, -10)
+    TabContainer.ClipsDescendants = true
 
     local TabCorner = Instance.new("UICorner")
     TabCorner.CornerRadius = UDim.new(0, 6)
@@ -158,8 +126,8 @@ function Library:CreateWindow(windowName, themeName)
     TabScroll.Parent = TabContainer
     TabScroll.BackgroundTransparency = 1
     TabScroll.BorderSizePixel = 0
-    TabScroll.Position = UDim2.new(0, 5, 0, 5) 
-    TabScroll.Size = UDim2.new(1, -10, 1, -10)  
+    TabScroll.Position = UDim2.new(0, 5, 0, 5)
+    TabScroll.Size = UDim2.new(1, -10, 1, -10)
     TabScroll.ScrollBarThickness = 3
     TabScroll.ScrollBarImageColor3 = currentTheme.Accent
     TabScroll.ScrollingDirection = Enum.ScrollingDirection.Y
@@ -168,33 +136,6 @@ function Library:CreateWindow(windowName, themeName)
     TabLayout.Parent = TabScroll
     TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
     TabLayout.Padding = UDim.new(0, 5)
-    
-    ItemContainer.Name = "ItemContainer"
-    ItemContainer.Parent = ContentFrame
-    ItemContainer.BackgroundColor3 = currentTheme.Secondary
-    ItemContainer.BorderSizePixel = 0
-    ItemContainer.Position = UDim2.new(0, 170, 0, 10)
-    ItemContainer.Size = UDim2.new(1, -180, 1, -20)
-    
-    local ItemCorner = Instance.new("UICorner")
-    ItemCorner.CornerRadius = UDim.new(0, 6)
-    ItemCorner.Parent = ItemContainer
-    
-    local isMinimized = false
-    ToggleButton.MouseButton1Click:Connect(function()
-        isMinimized = not isMinimized
-        PlaySound("rbxassetid://131961136")
-        
-        if isMinimized then
-            ContentFrame.Visible = false
-            MainFrame.Size = UDim2.new(0, 600, 0, 35)
-            ToggleButton.Text = "+"
-        else
-            ContentFrame.Visible = true
-            MainFrame.Size = UDim2.new(0, 600, 0, 400)
-            ToggleButton.Text = "-"
-        end
-    end)
     
     local WindowObject = {}
     
@@ -209,22 +150,22 @@ function Library:CreateWindow(windowName, themeName)
         TabButton.Parent = TabScroll
         TabButton.BackgroundColor3 = currentTheme.Primary
         TabButton.BorderSizePixel = 0
-        TabButton.Size = UDim2.new(1, -10, 0, 35)
+        TabButton.Size = UDim2.new(1, -10, 0, 30)
         TabButton.Font = Enum.Font.SourceSansSemibold
         TabButton.Text = tabName
         TabButton.TextColor3 = currentTheme.Text
-        TabButton.TextSize = 14
+        TabButton.TextSize = 12
         
         local ButtonCorner = Instance.new("UICorner")
         ButtonCorner.CornerRadius = UDim.new(0, 4)
         ButtonCorner.Parent = TabButton
         
         TabFrame.Name = tabName .. "Frame"
-        TabFrame.Parent = ItemContainer
+        TabFrame.Parent = TabContainer
         TabFrame.BackgroundTransparency = 1
         TabFrame.BorderSizePixel = 0
-        TabFrame.Position = UDim2.new(0, -6, 0, 10)
-        TabFrame.Size = UDim2.new(1, -20, 1, -20)
+        TabFrame.Position = UDim2.new(0, 0, 0, 0)
+        TabFrame.Size = UDim2.new(1, 0, 1, 0)
         TabFrame.ScrollBarThickness = 3
         TabFrame.ScrollBarImageColor3 = currentTheme.Accent
         TabFrame.ScrollingDirection = Enum.ScrollingDirection.Y
@@ -233,10 +174,10 @@ function Library:CreateWindow(windowName, themeName)
         
         ItemLayout.Parent = TabFrame
         ItemLayout.SortOrder = Enum.SortOrder.LayoutOrder
-        ItemLayout.Padding = UDim.new(0, 8)
+        ItemLayout.Padding = UDim.new(0, 5)
         
         TabButton.MouseButton1Click:Connect(function()
-            for _, child in pairs(ItemContainer:GetChildren()) do
+            for _, child in pairs(TabContainer:GetChildren()) do
                 if child:IsA("ScrollingFrame") then
                     child.Visible = false
                 end
@@ -271,11 +212,11 @@ function Library:CreateWindow(windowName, themeName)
             Button.Parent = TabFrame
             Button.BackgroundColor3 = currentTheme.Primary
             Button.BorderSizePixel = 0
-            Button.Size = UDim2.new(1, 0, 0, 35)
+            Button.Size = UDim2.new(1, 0, 0, 30)
             Button.Font = Enum.Font.SourceSansSemibold
             Button.Text = buttonText
             Button.TextColor3 = currentTheme.Text
-            Button.TextSize = 14
+            Button.TextSize = 12
             
             local ButtonCorner = Instance.new("UICorner")
             ButtonCorner.CornerRadius = UDim.new(0, 4)
@@ -306,7 +247,7 @@ function Library:CreateWindow(windowName, themeName)
             LabelFrame.Parent = TabFrame
             LabelFrame.BackgroundColor3 = currentTheme.Primary
             LabelFrame.BorderSizePixel = 0
-            LabelFrame.Size = UDim2.new(1, 0, 0, 35)
+            LabelFrame.Size = UDim2.new(1, 0, 0, 30)
             
             local Corner = Instance.new("UICorner")
             Corner.CornerRadius = UDim.new(0, 4)
@@ -322,7 +263,7 @@ function Library:CreateWindow(windowName, themeName)
             Label.Font = Enum.Font.SourceSansSemibold
             Label.Text = labelText
             Label.TextColor3 = currentTheme.Text
-            Label.TextSize = 14
+            Label.TextSize = 12
             Label.TextXAlignment = Enum.TextXAlignment.Left
             
             return {
@@ -352,7 +293,7 @@ function Library:CreateWindow(windowName, themeName)
             ToggleFrame.Parent = TabFrame
             ToggleFrame.BackgroundColor3 = currentTheme.Primary
             ToggleFrame.BorderSizePixel = 0
-            ToggleFrame.Size = UDim2.new(1, 0, 0, 35)
+            ToggleFrame.Size = UDim2.new(1, 0, 0, 30)
             
             local ToggleCorner = Instance.new("UICorner")
             ToggleCorner.CornerRadius = UDim.new(0, 4)
@@ -366,7 +307,7 @@ function Library:CreateWindow(windowName, themeName)
             ToggleLabel.Font = Enum.Font.SourceSansSemibold
             ToggleLabel.Text = toggleText
             ToggleLabel.TextColor3 = currentTheme.Text
-            ToggleLabel.TextSize = 14
+            ToggleLabel.TextSize = 12
             ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
             
             ToggleButton.Name = "Button"
@@ -441,7 +382,7 @@ function Library:CreateWindow(windowName, themeName)
             SliderFrame.Parent = TabFrame
             SliderFrame.BackgroundColor3 = currentTheme.Primary
             SliderFrame.BorderSizePixel = 0
-            SliderFrame.Size = UDim2.new(1, 0, 0, 50)
+            SliderFrame.Size = UDim2.new(1, 0, 0, 40)
             
             local SliderCorner = Instance.new("UICorner")
             SliderCorner.CornerRadius = UDim.new(0, 4)
@@ -451,30 +392,30 @@ function Library:CreateWindow(windowName, themeName)
             SliderLabel.Parent = SliderFrame
             SliderLabel.BackgroundTransparency = 1
             SliderLabel.Position = UDim2.new(0, 10, 0, 5)
-            SliderLabel.Size = UDim2.new(1, -60, 0, 20)
+            SliderLabel.Size = UDim2.new(1, -60, 0, 15)
             SliderLabel.Font = Enum.Font.SourceSansSemibold
             SliderLabel.Text = sliderText
             SliderLabel.TextColor3 = currentTheme.Text
-            SliderLabel.TextSize = 14
+            SliderLabel.TextSize = 12
             SliderLabel.TextXAlignment = Enum.TextXAlignment.Left
             
             SliderValueLabel.Name = "ValueLabel"
             SliderValueLabel.Parent = SliderFrame
             SliderValueLabel.BackgroundTransparency = 1
             SliderValueLabel.Position = UDim2.new(1, -50, 0, 5)
-            SliderValueLabel.Size = UDim2.new(0, 40, 0, 20)
+            SliderValueLabel.Size = UDim2.new(0, 40, 0, 15)
             SliderValueLabel.Font = Enum.Font.SourceSansBold
             SliderValueLabel.Text = tostring(defaultValue)
             SliderValueLabel.TextColor3 = currentTheme.Accent
-            SliderValueLabel.TextSize = 14
+            SliderValueLabel.TextSize = 12
             SliderValueLabel.TextXAlignment = Enum.TextXAlignment.Right
             
             SliderTrack.Name = "Track"
             SliderTrack.Parent = SliderFrame
             SliderTrack.BackgroundColor3 = currentTheme.Secondary
             SliderTrack.BorderSizePixel = 0
-            SliderTrack.Position = UDim2.new(0, 10, 0, 30)
-            SliderTrack.Size = UDim2.new(1, -20, 0, 6)
+            SliderTrack.Position = UDim2.new(0, 10, 0, 25)
+            SliderTrack.Size = UDim2.new(1, -20, 0, 5)
             
             local TrackCorner = Instance.new("UICorner")
             TrackCorner.CornerRadius = UDim.new(0, 3)
@@ -545,7 +486,7 @@ function Library:CreateWindow(windowName, themeName)
             DropdownFrame.Parent = TabFrame
             DropdownFrame.BackgroundColor3 = currentTheme.Primary
             DropdownFrame.BorderSizePixel = 0
-            DropdownFrame.Size = UDim2.new(1, 0, 0, 35)
+            DropdownFrame.Size = UDim2.new(1, 0, 0, 30)
             DropdownFrame.ClipsDescendants = true
             
             local DropdownCorner = Instance.new("UICorner")
@@ -555,7 +496,7 @@ function Library:CreateWindow(windowName, themeName)
             DropdownButton.Name = "Button"
             DropdownButton.Parent = DropdownFrame
             DropdownButton.BackgroundTransparency = 1
-            DropdownButton.Size = UDim2.new(1, 0, 0, 35)
+            DropdownButton.Size = UDim2.new(1, 0, 0, 30)
             DropdownButton.Text = ""
             
             DropdownLabel.Name = "Label"
@@ -566,7 +507,7 @@ function Library:CreateWindow(windowName, themeName)
             DropdownLabel.Font = Enum.Font.SourceSansSemibold
             DropdownLabel.Text = dropdownText
             DropdownLabel.TextColor3 = currentTheme.Text
-            DropdownLabel.TextSize = 14
+            DropdownLabel.TextSize = 12
             DropdownLabel.TextXAlignment = Enum.TextXAlignment.Left
             
             DropdownArrow.Name = "Arrow"
@@ -583,7 +524,7 @@ function Library:CreateWindow(windowName, themeName)
             DropdownList.Parent = DropdownFrame
             DropdownList.BackgroundTransparency = 1
             DropdownList.BorderSizePixel = 0
-            DropdownList.Position = UDim2.new(0, 0, 0, 35)
+            DropdownList.Position = UDim2.new(0, 0, 0, 30)
             DropdownList.Size = UDim2.new(1, 0, 0, 0)
             DropdownList.ScrollBarThickness = 2
             DropdownList.ScrollBarImageColor3 = currentTheme.Accent
@@ -601,11 +542,11 @@ function Library:CreateWindow(windowName, themeName)
                 OptionButton.Parent = DropdownList
                 OptionButton.BackgroundColor3 = currentTheme.Secondary
                 OptionButton.BorderSizePixel = 0
-                OptionButton.Size = UDim2.new(1, 0, 0, 30)
+                OptionButton.Size = UDim2.new(1, 0, 0, 25)
                 OptionButton.Font = Enum.Font.SourceSans
                 OptionButton.Text = option
                 OptionButton.TextColor3 = currentTheme.Text
-                OptionButton.TextSize = 14
+                OptionButton.TextSize = 12
                 
                 OptionButton.MouseButton1Click:Connect(function()
                     DropdownLabel.Text = dropdownText .. ": " .. option
@@ -613,7 +554,7 @@ function Library:CreateWindow(windowName, themeName)
                     PlaySound("rbxassetid://131961136")
                     
                     isOpen = false
-                    DropdownFrame.Size = UDim2.new(1, 0, 0, 35)
+                    DropdownFrame.Size = UDim2.new(1, 0, 0, 30)
                     DropdownList.Size = UDim2.new(1, 0, 0, 0)
                     DropdownArrow.Text = "v"
                 end)
@@ -636,12 +577,12 @@ function Library:CreateWindow(windowName, themeName)
                 PlaySound("rbxassetid://131961136")
                 
                 if isOpen then
-                    local listHeight = math.min(120, ListLayout.AbsoluteContentSize.Y)
-                    DropdownFrame.Size = UDim2.new(1, 0, 0, 35 + listHeight)
+                    local listHeight = math.min(100, ListLayout.AbsoluteContentSize.Y)
+                    DropdownFrame.Size = UDim2.new(1, 0, 0, 30 + listHeight)
                     DropdownList.Size = UDim2.new(1, 0, 0, listHeight)
                     DropdownArrow.Text = "^"
                 else
-                    DropdownFrame.Size = UDim2.new(1, 0, 0, 35)
+                    DropdownFrame.Size = UDim2.new(1, 0, 0, 30)
                     DropdownList.Size = UDim2.new(1, 0, 0, 0)
                     DropdownArrow.Text = "v"
                 end
@@ -649,7 +590,7 @@ function Library:CreateWindow(windowName, themeName)
         end
         
         function TabObject:Show()
-            for _, child in pairs(ItemContainer:GetChildren()) do
+            for _, child in pairs(TabContainer:GetChildren()) do
                 if child:IsA("ScrollingFrame") then
                     child.Visible = false
                 end
@@ -690,7 +631,6 @@ function Library:CreateWindow(windowName, themeName)
             Title.TextColor3 = currentTheme.Text
             ToggleButton.TextColor3 = currentTheme.Text
             TabContainer.BackgroundColor3 = currentTheme.Secondary
-            ItemContainer.BackgroundColor3 = currentTheme.Secondary
             TabScroll.ScrollBarImageColor3 = currentTheme.Accent
             
             for _, tabButton in pairs(TabScroll:GetChildren()) do
@@ -699,7 +639,7 @@ function Library:CreateWindow(windowName, themeName)
                     tabButton.TextColor3 = currentTheme.Text
                     
                     local tabName = string.gsub(tabButton.Name, "Button", "")
-                    local tabFrame = ItemContainer:FindFirstChild(tabName.."Frame")
+                    local tabFrame = TabContainer:FindFirstChild(tabName.."Frame")
                     if tabFrame then
                         tabFrame.ScrollBarImageColor3 = currentTheme.Accent
                         
