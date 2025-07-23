@@ -1,7 +1,11 @@
+I'll fix and improve the code. Here's the corrected version:
+
+```lua
 local Library = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 local Mouse = Players.LocalPlayer:GetMouse()
 
 local function PlaySound(soundId)
@@ -198,138 +202,111 @@ function Library:CreateWindow(windowName, themeName)
     end)
     
     local WindowObject = {}
+    
+    function WindowObject:CreateTab(tabName, icon)
+        tabName = tabName or "New Tab"
 
--- Ensure required services and dependencies are defined
-local TweenService = game:GetService("TweenService")
-local currentTheme = {
-	Primary = Color3.fromRGB(30, 30, 30),
-	Accent = Color3.fromRGB(90, 90, 255),
-	Text = Color3.fromRGB(255, 255, 255),
-	IsLight = false,
-}
+        local TabButton = Instance.new("TextButton")
+        local TabFrame = Instance.new("ScrollingFrame")
+        local ItemLayout = Instance.new("UIListLayout")
+        local TabText = Instance.new("TextLabel")
 
--- Replace these with actual UI containers
-local TabScroll = Instance.new("Frame") -- Should be defined in your actual UI
-local ItemContainer = Instance.new("Frame") -- Should be defined in your actual UI
+        -- Tab Button
+        TabButton.Name = tabName .. "Button"
+        TabButton.Parent = TabScroll
+        TabButton.BackgroundColor3 = currentTheme.Primary
+        TabButton.BorderSizePixel = 0
+        TabButton.Size = UDim2.new(1, -10, 0, 35)
+        TabButton.Font = Enum.Font.SourceSansSemibold
+        TabButton.Text = ""
+        TabButton.TextColor3 = currentTheme.Text
+        TabButton.TextSize = 14
 
-local function PlaySound(id)
-	local sound = Instance.new("Sound", workspace)
-	sound.SoundId = id
-	sound.Volume = 1
-	sound:Play()
-	game.Debris:AddItem(sound, 2)
-end
+        local ButtonCorner = Instance.new("UICorner")
+        ButtonCorner.CornerRadius = UDim.new(0, 4)
+        ButtonCorner.Parent = TabButton
 
-function WindowObject:CreateTab(tabName, icon)
-	tabName = tabName or "New Tab"
+        -- Icon (if provided)
+        if icon then
+            local IconLabel = Instance.new("TextLabel")
+            IconLabel.Name = "Icon"
+            IconLabel.Parent = TabButton
+            IconLabel.BackgroundTransparency = 1
+            IconLabel.Position = UDim2.new(0, 10, 0, 0)
+            IconLabel.Size = UDim2.new(0, 20, 1, 0)
+            IconLabel.Font = Enum.Font.FontAwesome
+            IconLabel.Text = tostring(icon)
+            IconLabel.TextColor3 = currentTheme.Text
+            IconLabel.TextSize = 14
+            IconLabel.TextXAlignment = Enum.TextXAlignment.Left
+            IconLabel.TextTransparency = 0
+            IconLabel.Visible = true
+            IconLabel.ZIndex = 2
+        end
 
-	local TabButton = Instance.new("TextButton")
-	local TabFrame = Instance.new("ScrollingFrame")
-	local ItemLayout = Instance.new("UIListLayout")
-	local TabText = Instance.new("TextLabel")
+        -- Tab Text
+        TabText.Name = "TabText"
+        TabText.Parent = TabButton
+        TabText.BackgroundTransparency = 1
+        TabText.Position = UDim2.new(0, icon and 35 or 10, 0, 0)
+        TabText.Size = UDim2.new(1, icon and -40 or -20, 1, 0)
+        TabText.Font = Enum.Font.SourceSansSemibold
+        TabText.Text = tabName
+        TabText.TextColor3 = currentTheme.Text
+        TabText.TextSize = 14
+        TabText.TextXAlignment = Enum.TextXAlignment.Left
 
-	-- Tab Button
-	TabButton.Name = tabName .. "Button"
-	TabButton.Parent = TabScroll
-	TabButton.BackgroundColor3 = currentTheme.Primary
-	TabButton.BorderSizePixel = 0
-	TabButton.Size = UDim2.new(1, -10, 0, 35)
-	TabButton.Font = Enum.Font.SourceSansSemibold
-	TabButton.Text = ""
-	TabButton.TextColor3 = currentTheme.Text
-	TabButton.TextSize = 14
+        -- Tab Frame
+        TabFrame.Name = tabName .. "Frame"
+        TabFrame.Parent = ItemContainer
+        TabFrame.BackgroundTransparency = 1
+        TabFrame.BorderSizePixel = 0
+        TabFrame.Position = UDim2.new(0, 10, 0, 10)
+        TabFrame.Size = UDim2.new(1, -20, 1, -20)
+        TabFrame.ScrollBarThickness = 3
+        TabFrame.ScrollBarImageColor3 = currentTheme.Accent
+        TabFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+        TabFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+        TabFrame.Visible = false
 
-	local ButtonCorner = Instance.new("UICorner")
-	ButtonCorner.CornerRadius = UDim.new(0, 4)
-	ButtonCorner.Parent = TabButton
+        -- Layout inside Tab Frame
+        ItemLayout.Parent = TabFrame
+        ItemLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        ItemLayout.Padding = UDim.new(0, 8)
+        
+        -- Auto resize canvas
+        ItemLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            TabFrame.CanvasSize = UDim2.new(0, 0, 0, ItemLayout.AbsoluteContentSize.Y + 10)
+        end)
 
-	-- Icon (if provided)
-	if icon then
-		local IconLabel = Instance.new("TextLabel")
-		IconLabel.Name = "Icon"
-		IconLabel.Parent = TabButton
-		IconLabel.BackgroundTransparency = 1
-		IconLabel.Position = UDim2.new(0, 10, 0, 0)
-		IconLabel.Size = UDim2.new(0, 20, 1, 0)
-		IconLabel.Font = Enum.Font.FontAwesome
-		IconLabel.Text = tostring(icon)
-		IconLabel.TextColor3 = currentTheme.Text
-		IconLabel.TextSize = 14
-		IconLabel.TextXAlignment = Enum.TextXAlignment.Left
-		IconLabel.TextTransparency = 0
-		IconLabel.Visible = true
-		IconLabel.ZIndex = 2
-	end
+        -- Button Click
+        TabButton.MouseButton1Click:Connect(function()
+            -- Hide all frames
+            for _, child in pairs(ItemContainer:GetChildren()) do
+                if child:IsA("ScrollingFrame") then
+                    child.Visible = false
+                end
+            end
 
-	-- Tab Text
-	TabText.Name = "TabText"
-	TabText.Parent = TabButton
-	TabText.BackgroundTransparency = 1
-	TabText.Position = UDim2.new(0, icon and 35 or 10, 0, 0)
-	TabText.Size = UDim2.new(1, icon and -40 or -20, 1, 0)
-	TabText.Font = Enum.Font.SourceSansSemibold
-	TabText.Text = tabName
-	TabText.TextColor3 = currentTheme.Text
-	TabText.TextSize = 14
-	TabText.TextXAlignment = Enum.TextXAlignment.Left
+            -- Reset tab buttons
+            for _, child in pairs(TabScroll:GetChildren()) do
+                if child:IsA("TextButton") then
+                    TweenService:Create(child, TweenInfo.new(0.15), {
+                        BackgroundColor3 = currentTheme.Primary,
+                        TextColor3 = currentTheme.Text
+                    }):Play()
+                end
+            end
 
-	-- Tab Frame
-	TabFrame.Name = tabName .. "Frame"
-	TabFrame.Parent = ItemContainer
-	TabFrame.BackgroundTransparency = 1
-	TabFrame.BorderSizePixel = 0
-	TabFrame.Position = UDim2.new(0, 10, 0, 10)
-	TabFrame.Size = UDim2.new(1, -20, 1, -20)
-	TabFrame.ScrollBarThickness = 3
-	TabFrame.ScrollBarImageColor3 = currentTheme.Accent
-	TabFrame.ScrollingDirection = Enum.ScrollingDirection.Y
-	TabFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-	TabFrame.Visible = false
+            -- Show selected frame
+            TabFrame.Visible = true
+            TweenService:Create(TabButton, TweenInfo.new(0.15), {
+                BackgroundColor3 = currentTheme.Accent,
+                TextColor3 = currentTheme.IsLight and currentTheme.Primary or Color3.fromRGB(255, 255, 255)
+            }):Play()
 
-	-- Layout inside Tab Frame
-	ItemLayout.Parent = TabFrame
-	ItemLayout.SortOrder = Enum.SortOrder.LayoutOrder
-	ItemLayout.Padding = UDim.new(0, 8)
-
-	-- Button Click
-	TabButton.MouseButton1Click:Connect(function()
-		-- Hide all frames
-		for _, child in pairs(ItemContainer:GetChildren()) do
-			if child:IsA("ScrollingFrame") then
-				child.Visible = false
-			end
-		end
-
-		-- Reset tab buttons
-		for _, child in pairs(TabScroll:GetChildren()) do
-			if child:IsA("TextButton") then
-				TweenService:Create(child, TweenInfo.new(0.15), {
-					BackgroundColor3 = currentTheme.Primary,
-					TextColor3 = currentTheme.Text
-				}):Play()
-			end
-		end
-
-		-- Show selected frame
-		TabFrame.Visible = true
-		TweenService:Create(TabButton, TweenInfo.new(0.15), {
-			BackgroundColor3 = currentTheme.Accent,
-			TextColor3 = currentTheme.IsLight and currentTheme.Primary or Color3.fromRGB(255, 255, 255)
-		}):Play()
-
-		PlaySound("rbxassetid://131961136")
-	end)
-
-	-- Auto resize canvas
-	ItemLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-		TabFrame.CanvasSize = UDim2.new(0, 0, 0, ItemLayout.AbsoluteContentSize.Y + 10)
-	end)
-
-	return TabFrame
-end
-
-return WindowObject
-
+            PlaySound("rbxassetid://131961136")
+        end)
 
         local TabObject = {}
 
@@ -616,7 +593,7 @@ return WindowObject
                 local confirmButton = Instance.new("TextButton")
                 
                 colorPicker.Name = "ColorPicker"
-                colorPicker.Parent = game.CoreGui
+                colorPicker.Parent = ScreenGui
                 colorPicker.BackgroundColor3 = currentTheme.Primary
                 colorPicker.BorderSizePixel = 0
                 colorPicker.Position = UDim2.new(0.5, -150, 0.5, -100)
@@ -831,262 +808,38 @@ return WindowObject
             CloseButton.Font = Enum.Font.SourceSansBold
             CloseButton.Text = "X"
             CloseButton.TextColor3 = currentTheme.Text
-            CloseButton.TextSize = 16
+                        CloseButton.TextSize = 14
             CloseButton.ZIndex = 101
-            
-            TweenService:Create(Notification, TweenInfo.new(0.3), {
-                Position = UDim2.new(1, -255, 1, -100)
-            }):Play()
-            
+
             CloseButton.MouseButton1Click:Connect(function()
                 TweenService:Create(Notification, TweenInfo.new(0.3), {
-                                       Position = UDim2.new(1, 5, 1, -100)
+                    Position = UDim2.new(1, 5, 1, 100)
                 }):Play()
                 wait(0.3)
                 Notification:Destroy()
             end)
 
-            if duration > 0 then
-                delay(duration, function()
+            -- Show animation
+            Notification.Position = UDim2.new(1, 5, 1, 100)
+            TweenService:Create(Notification, TweenInfo.new(0.3), {
+                Position = UDim2.new(1, -260, 1, -100)
+            }):Play()
+
+            -- Auto close after duration
+            task.delay(duration, function()
+                if Notification and Notification.Parent then
                     TweenService:Create(Notification, TweenInfo.new(0.3), {
-                        Position = UDim2.new(1, 5, 1, -100)
+                        Position = UDim2.new(1, 5, 1, 100)
                     }):Play()
                     wait(0.3)
                     Notification:Destroy()
-                end)
-            end
-
-            return {
-                Close = function()
-                    TweenService:Create(Notification, TweenInfo.new(0.3), {
-                        Position = UDim2.new(1, 5, 1, -100)
-                    }):Play()
-                    wait(0.3)
-                    Notification:Destroy()
-                end,
-                Update = function(newTitle, newMessage)
-                    TitleLabel.Text = newTitle or title
-                    MessageLabel.Text = newMessage or message
-                end
-            }
-        end
-
-        function TabObject:CreateToggle(toggleText, defaultState, callback)
-            toggleText = toggleText or "Toggle"
-            defaultState = defaultState or false
-            callback = callback or function() end
-            
-            local ToggleFrame = Instance.new("Frame")
-            local ToggleLabel = Instance.new("TextLabel")
-            local ToggleButton = Instance.new("TextButton")
-            local ToggleIndicator = Instance.new("Frame")
-            
-            ToggleFrame.Name = "ToggleFrame"
-            ToggleFrame.Parent = TabFrame
-            ToggleFrame.BackgroundColor3 = currentTheme.Primary
-            ToggleFrame.BorderSizePixel = 0
-            ToggleFrame.Size = UDim2.new(1, 0, 0, 35)
-            
-            local Corner = Instance.new("UICorner")
-            Corner.CornerRadius = UDim.new(0, 4)
-            Corner.Parent = ToggleFrame
-            
-            ToggleLabel.Name = "Label"
-            ToggleLabel.Parent = ToggleFrame
-            ToggleLabel.BackgroundTransparency = 1
-            ToggleLabel.Position = UDim2.new(0, 10, 0, 0)
-            ToggleLabel.Size = UDim2.new(0, 200, 1, 0)
-            ToggleLabel.Font = Enum.Font.SourceSansSemibold
-            ToggleLabel.Text = toggleText
-            ToggleLabel.TextColor3 = currentTheme.Text
-            ToggleLabel.TextSize = 14
-            ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
-            
-            ToggleButton.Name = "ToggleButton"
-            ToggleButton.Parent = ToggleFrame
-            ToggleButton.BackgroundColor3 = currentTheme.Secondary
-            ToggleButton.BorderSizePixel = 0
-            ToggleButton.Position = UDim2.new(1, -50, 0.5, -10)
-            ToggleButton.Size = UDim2.new(0, 40, 0, 20)
-            ToggleButton.Text = ""
-            
-            local ButtonCorner = Instance.new("UICorner")
-            ButtonCorner.CornerRadius = UDim.new(0, 10)
-            ButtonCorner.Parent = ToggleButton
-            
-            ToggleIndicator.Name = "Indicator"
-            ToggleIndicator.Parent = ToggleButton
-            ToggleIndicator.BackgroundColor3 = currentTheme.Text
-            ToggleIndicator.BorderSizePixel = 0
-            ToggleIndicator.Position = defaultState and UDim2.new(0, 22, 0, 2) or UDim2.new(0, 2, 0, 2)
-            ToggleIndicator.Size = UDim2.new(0, 16, 0, 16)
-            
-            local IndicatorCorner = Instance.new("UICorner")
-            IndicatorCorner.CornerRadius = UDim.new(0, 8)
-            IndicatorCorner.Parent = ToggleIndicator
-            
-            local function updateToggle(state)
-                if state then
-                    TweenService:Create(ToggleIndicator, TweenInfo.new(0.1), {
-                        Position = UDim2.new(0, 22, 0, 2),
-                        BackgroundColor3 = currentTheme.Accent
-                    }):Play()
-                else
-                    TweenService:Create(ToggleIndicator, TweenInfo.new(0.1), {
-                        Position = UDim2.new(0, 2, 0, 2),
-                        BackgroundColor3 = currentTheme.Text
-                    }):Play()
-                end
-                pcall(callback, state)
-            end
-            
-            ToggleButton.MouseButton1Click:Connect(function()
-                PlaySound("rbxassetid://131961136")
-                defaultState = not defaultState
-                updateToggle(defaultState)
-            end)
-            
-            return {
-                SetState = function(state)
-                    defaultState = state
-                    updateToggle(state)
-                end,
-                GetState = function()
-                    return defaultState
-                end
-            }
-        end
-
-        function TabObject:CreateSlider(sliderText, minValue, maxValue, default, callback)
-            sliderText = sliderText or "Slider"
-            minValue = minValue or 0
-            maxValue = maxValue or 100
-            default = default or minValue
-            callback = callback or function() end
-            
-            local SliderFrame = Instance.new("Frame")
-            local SliderLabel = Instance.new("TextLabel")
-            local SliderTrack = Instance.new("Frame")
-            local SliderFill = Instance.new("Frame")
-            local SliderButton = Instance.new("TextButton")
-            local SliderValue = Instance.new("TextLabel")
-            
-            SliderFrame.Name = "SliderFrame"
-            SliderFrame.Parent = TabFrame
-            SliderFrame.BackgroundColor3 = currentTheme.Primary
-            SliderFrame.BorderSizePixel = 0
-            SliderFrame.Size = UDim2.new(1, 0, 0, 50)
-            
-            local Corner = Instance.new("UICorner")
-            Corner.CornerRadius = UDim.new(0, 4)
-            Corner.Parent = SliderFrame
-            
-            SliderLabel.Name = "Label"
-            SliderLabel.Parent = SliderFrame
-            SliderLabel.BackgroundTransparency = 1
-            SliderLabel.Position = UDim2.new(0, 10, 0, 5)
-            SliderLabel.Size = UDim2.new(1, -20, 0, 15)
-            SliderLabel.Font = Enum.Font.SourceSansSemibold
-            SliderLabel.Text = sliderText
-            SliderLabel.TextColor3 = currentTheme.Text
-            SliderLabel.TextSize = 14
-            SliderLabel.TextXAlignment = Enum.TextXAlignment.Left
-            
-            SliderTrack.Name = "Track"
-            SliderTrack.Parent = SliderFrame
-            SliderTrack.BackgroundColor3 = currentTheme.Secondary
-            SliderTrack.BorderSizePixel = 0
-            SliderTrack.Position = UDim2.new(0, 10, 0, 25)
-            SliderTrack.Size = UDim2.new(1, -20, 0, 5)
-            
-            local TrackCorner = Instance.new("UICorner")
-            TrackCorner.CornerRadius = UDim.new(0, 3)
-            TrackCorner.Parent = SliderTrack
-            
-            SliderFill.Name = "Fill"
-            SliderFill.Parent = SliderTrack
-            SliderFill.BackgroundColor3 = currentTheme.Accent
-            SliderFill.BorderSizePixel = 0
-            SliderFill.Size = UDim2.new((default - minValue)/(maxValue - minValue), 0, 1, 0)
-            
-            local FillCorner = Instance.new("UICorner")
-            FillCorner.CornerRadius = UDim.new(0, 3)
-            FillCorner.Parent = SliderFill
-            
-            SliderButton.Name = "Button"
-            SliderButton.Parent = SliderTrack
-            SliderButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-            SliderButton.BorderSizePixel = 0
-            SliderButton.Position = UDim2.new((default - minValue)/(maxValue - minValue), -6, 0.5, -6)
-            SliderButton.Size = UDim2.new(0, 12, 0, 12)
-            SliderButton.Text = ""
-            
-            local ButtonCorner = Instance.new("UICorner")
-            ButtonCorner.CornerRadius = UDim.new(0, 6)
-            ButtonCorner.Parent = SliderButton
-            
-            SliderValue.Name = "Value"
-            SliderValue.Parent = SliderFrame
-            SliderValue.BackgroundTransparency = 1
-            SliderValue.Position = UDim2.new(1, -60, 0, 5)
-            SliderValue.Size = UDim2.new(0, 50, 0, 15)
-            SliderValue.Font = Enum.Font.SourceSansSemibold
-            SliderValue.Text = tostring(default)
-            SliderValue.TextColor3 = currentTheme.Text
-            SliderValue.TextSize = 14
-            SliderValue.TextXAlignment = Enum.TextXAlignment.Right
-            
-            local function updateSlider(value)
-                local percent = math.clamp((value - minValue)/(maxValue - minValue), 0, 1)
-                SliderFill.Size = UDim2.new(percent, 0, 1, 0)
-                SliderButton.Position = UDim2.new(percent, -6, 0.5, -6)
-                SliderValue.Text = tostring(math.floor(value))
-                pcall(callback, value)
-            end
-            
-            local sliding = false
-            SliderButton.MouseButton1Down:Connect(function()
-                sliding = true
-                PlaySound("rbxassetid://131961136")
-            end)
-            
-            UserInputService.InputEnded:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    sliding = false
                 end
             end)
-            
-            Mouse.Move:Connect(function()
-                if sliding then
-                    local xPos = Mouse.X - SliderTrack.AbsolutePosition.X
-                    local percent = math.clamp(xPos/SliderTrack.AbsoluteSize.X, 0, 1)
-                    local value = math.floor(minValue + (maxValue - minValue) * percent)
-                    updateSlider(value)
-                end
-            end)
-            
-            return {
-                SetValue = function(value)
-                    value = math.clamp(value, minValue, maxValue)
-                    updateSlider(value)
-                end,
-                GetValue = function()
-                    return tonumber(SliderValue.Text)
-                end
-            }
         end
 
-        -- Automatically select the first tab
-        if #TabScroll:GetChildren() == 1 then
-            wait()
-            TabButton:Fire("MouseButton1Click")
-        end
-
-        TabScroll.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y + 10)
-        
         return TabObject
     end
-    
+
     return WindowObject
 end
 
