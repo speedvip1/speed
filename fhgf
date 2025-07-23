@@ -199,104 +199,137 @@ function Library:CreateWindow(windowName, themeName)
     
     local WindowObject = {}
 
-    function WindowObject:CreateTab(tabName, icon)
-        tabName = tabName or "New Tab"
+-- Ensure required services and dependencies are defined
+local TweenService = game:GetService("TweenService")
+local currentTheme = {
+	Primary = Color3.fromRGB(30, 30, 30),
+	Accent = Color3.fromRGB(90, 90, 255),
+	Text = Color3.fromRGB(255, 255, 255),
+	IsLight = false,
+}
 
-        local TabButton = Instance.new("TextButton")
-        local TabFrame = Instance.new("ScrollingFrame")
-        local ItemLayout = Instance.new("UIListLayout")
-        local TabText = Instance.new("TextLabel")
+-- Replace these with actual UI containers
+local TabScroll = Instance.new("Frame") -- Should be defined in your actual UI
+local ItemContainer = Instance.new("Frame") -- Should be defined in your actual UI
 
-        TabButton.Name = tabName .. "Button"
-        TabButton.Parent = TabScroll
-        TabButton.BackgroundColor3 = currentTheme.Primary
-        TabButton.BorderSizePixel = 0
-        TabButton.Size = UDim2.new(1, -10, 0, 35)
-        TabButton.Font = Enum.Font.SourceSansSemibold
-        TabButton.Text = ""
-        TabButton.TextColor3 = currentTheme.Text
-        TabButton.TextSize = 14
-
-        local ButtonCorner = Instance.new("UICorner")
-        ButtonCorner.CornerRadius = UDim.new(0, 4)
-        ButtonCorner.Parent = TabButton
-
-        if icon then
-    local IconLabel = Instance.new("TextLabel")
-    IconLabel.Name = "Icon"
-    IconLabel.Parent = TabButton
-    IconLabel.BackgroundTransparency = 1
-    IconLabel.Position = UDim2.new(0, 10, 0, 0)
-    IconLabel.Size = UDim2.new(0, 20, 1, 0)
-    IconLabel.Font = Enum.Font.FontAwesome
-    
-    
-    IconLabel.Text = tostring(icon) or ""
-    
-    IconLabel.TextColor3 = currentTheme.Text or Color3.fromRGB(255, 255, 255) -- قيمة افتراضية إذا لم يكن currentTheme موجودًا
-    IconLabel.TextSize = 14
-    IconLabel.TextXAlignment = Enum.TextXAlignment.Left
-    
-    IconLabel.TextTransparency = 0
-    IconLabel.Visible = true
-    IconLabel.ZIndex = 2 
+local function PlaySound(id)
+	local sound = Instance.new("Sound", workspace)
+	sound.SoundId = id
+	sound.Volume = 1
+	sound:Play()
+	game.Debris:AddItem(sound, 2)
 end
 
-        TabText.Name = "TabText"
-        TabText.Parent = TabButton
-        TabText.BackgroundTransparency = 1
-        TabText.Position = UDim2.new(0, icon and 35 or 10, 0, 0)
-        TabText.Size = UDim2.new(1, icon and -40 or -20, 1, 0)
-        TabText.Font = Enum.Font.SourceSansSemibold
-        TabText.Text = tabName
-        TabText.TextColor3 = currentTheme.Text
-        TabText.TextSize = 14
-        TabText.TextXAlignment = Enum.TextXAlignment.Left
+function WindowObject:CreateTab(tabName, icon)
+	tabName = tabName or "New Tab"
 
-        TabFrame.Name = tabName .. "Frame"
-        TabFrame.Parent = ItemContainer
-        TabFrame.BackgroundTransparency = 1
-        TabFrame.BorderSizePixel = 0
-        TabFrame.Position = UDim2.new(0, 10, 0, 10)
-        TabFrame.Size = UDim2.new(1, -20, 1, -20)
-        TabFrame.ScrollBarThickness = 3
-        TabFrame.ScrollBarImageColor3 = currentTheme.Accent
-        TabFrame.ScrollingDirection = Enum.ScrollingDirection.Y
-        TabFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-        TabFrame.Visible = false
+	local TabButton = Instance.new("TextButton")
+	local TabFrame = Instance.new("ScrollingFrame")
+	local ItemLayout = Instance.new("UIListLayout")
+	local TabText = Instance.new("TextLabel")
 
-        ItemLayout.Parent = TabFrame
-        ItemLayout.SortOrder = Enum.SortOrder.LayoutOrder
-        ItemLayout.Padding = UDim.new(0, 8)
+	-- Tab Button
+	TabButton.Name = tabName .. "Button"
+	TabButton.Parent = TabScroll
+	TabButton.BackgroundColor3 = currentTheme.Primary
+	TabButton.BorderSizePixel = 0
+	TabButton.Size = UDim2.new(1, -10, 0, 35)
+	TabButton.Font = Enum.Font.SourceSansSemibold
+	TabButton.Text = ""
+	TabButton.TextColor3 = currentTheme.Text
+	TabButton.TextSize = 14
 
-        TabButton.MouseButton1Click:Connect(function()
-            for _, child in pairs(ItemContainer:GetChildren()) do
-                if child:IsA("ScrollingFrame") then
-                    child.Visible = false
-                end
-            end
+	local ButtonCorner = Instance.new("UICorner")
+	ButtonCorner.CornerRadius = UDim.new(0, 4)
+	ButtonCorner.Parent = TabButton
 
-            for _, child in pairs(TabScroll:GetChildren()) do
-                if child:IsA("TextButton") then
-                    TweenService:Create(child, TweenInfo.new(0.15), {
-                        BackgroundColor3 = currentTheme.Primary,
-                        TextColor3 = currentTheme.Text
-                    }):Play()
-                end
-            end
+	-- Icon (if provided)
+	if icon then
+		local IconLabel = Instance.new("TextLabel")
+		IconLabel.Name = "Icon"
+		IconLabel.Parent = TabButton
+		IconLabel.BackgroundTransparency = 1
+		IconLabel.Position = UDim2.new(0, 10, 0, 0)
+		IconLabel.Size = UDim2.new(0, 20, 1, 0)
+		IconLabel.Font = Enum.Font.FontAwesome
+		IconLabel.Text = tostring(icon)
+		IconLabel.TextColor3 = currentTheme.Text
+		IconLabel.TextSize = 14
+		IconLabel.TextXAlignment = Enum.TextXAlignment.Left
+		IconLabel.TextTransparency = 0
+		IconLabel.Visible = true
+		IconLabel.ZIndex = 2
+	end
 
-            TabFrame.Visible = true
-            TweenService:Create(TabButton, TweenInfo.new(0.15), {
-                BackgroundColor3 = currentTheme.Accent,
-                TextColor3 = currentTheme.IsLight and currentTheme.Primary or Color3.fromRGB(255, 255, 255)
-            }):Play()
+	-- Tab Text
+	TabText.Name = "TabText"
+	TabText.Parent = TabButton
+	TabText.BackgroundTransparency = 1
+	TabText.Position = UDim2.new(0, icon and 35 or 10, 0, 0)
+	TabText.Size = UDim2.new(1, icon and -40 or -20, 1, 0)
+	TabText.Font = Enum.Font.SourceSansSemibold
+	TabText.Text = tabName
+	TabText.TextColor3 = currentTheme.Text
+	TabText.TextSize = 14
+	TabText.TextXAlignment = Enum.TextXAlignment.Left
 
-            PlaySound("rbxassetid://131961136")
-        end)
+	-- Tab Frame
+	TabFrame.Name = tabName .. "Frame"
+	TabFrame.Parent = ItemContainer
+	TabFrame.BackgroundTransparency = 1
+	TabFrame.BorderSizePixel = 0
+	TabFrame.Position = UDim2.new(0, 10, 0, 10)
+	TabFrame.Size = UDim2.new(1, -20, 1, -20)
+	TabFrame.ScrollBarThickness = 3
+	TabFrame.ScrollBarImageColor3 = currentTheme.Accent
+	TabFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+	TabFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+	TabFrame.Visible = false
 
-        ItemLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-            TabFrame.CanvasSize = UDim2.new(0, 0, 0, ItemLayout.AbsoluteContentSize.Y + 10)
-        end)
+	-- Layout inside Tab Frame
+	ItemLayout.Parent = TabFrame
+	ItemLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	ItemLayout.Padding = UDim.new(0, 8)
+
+	-- Button Click
+	TabButton.MouseButton1Click:Connect(function()
+		-- Hide all frames
+		for _, child in pairs(ItemContainer:GetChildren()) do
+			if child:IsA("ScrollingFrame") then
+				child.Visible = false
+			end
+		end
+
+		-- Reset tab buttons
+		for _, child in pairs(TabScroll:GetChildren()) do
+			if child:IsA("TextButton") then
+				TweenService:Create(child, TweenInfo.new(0.15), {
+					BackgroundColor3 = currentTheme.Primary,
+					TextColor3 = currentTheme.Text
+				}):Play()
+			end
+		end
+
+		-- Show selected frame
+		TabFrame.Visible = true
+		TweenService:Create(TabButton, TweenInfo.new(0.15), {
+			BackgroundColor3 = currentTheme.Accent,
+			TextColor3 = currentTheme.IsLight and currentTheme.Primary or Color3.fromRGB(255, 255, 255)
+		}):Play()
+
+		PlaySound("rbxassetid://131961136")
+	end)
+
+	-- Auto resize canvas
+	ItemLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		TabFrame.CanvasSize = UDim2.new(0, 0, 0, ItemLayout.AbsoluteContentSize.Y + 10)
+	end)
+
+	return TabFrame
+end
+
+return WindowObject
+
 
         local TabObject = {}
 
