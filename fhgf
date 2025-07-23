@@ -222,18 +222,25 @@ function Library:CreateWindow(windowName, themeName)
         ButtonCorner.Parent = TabButton
 
         if icon then
-            local IconLabel = Instance.new("TextLabel")
-            IconLabel.Name = "Icon"
-            IconLabel.Parent = TabButton
-            IconLabel.BackgroundTransparency = 1
-            IconLabel.Position = UDim2.new(0, 10, 0, 0)
-            IconLabel.Size = UDim2.new(0, 20, 1, 0)
-            IconLabel.Font = Enum.Font.FontAwesome
-            IconLabel.Text = icon
-            IconLabel.TextColor3 = currentTheme.Text
-            IconLabel.TextSize = 14
-            IconLabel.TextXAlignment = Enum.TextXAlignment.Left
-        end
+    local IconLabel = Instance.new("TextLabel")
+    IconLabel.Name = "Icon"
+    IconLabel.Parent = TabButton
+    IconLabel.BackgroundTransparency = 1
+    IconLabel.Position = UDim2.new(0, 10, 0, 0)
+    IconLabel.Size = UDim2.new(0, 20, 1, 0)
+    IconLabel.Font = Enum.Font.FontAwesome
+    
+    
+    IconLabel.Text = tostring(icon) or ""
+    
+    IconLabel.TextColor3 = currentTheme.Text or Color3.fromRGB(255, 255, 255) -- قيمة افتراضية إذا لم يكن currentTheme موجودًا
+    IconLabel.TextSize = 14
+    IconLabel.TextXAlignment = Enum.TextXAlignment.Left
+    
+    IconLabel.TextTransparency = 0
+    IconLabel.Visible = true
+    IconLabel.ZIndex = 2 
+end
 
         TabText.Name = "TabText"
         TabText.Parent = TabButton
