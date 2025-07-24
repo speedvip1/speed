@@ -1,0 +1,318 @@
+local Library = {}
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Mouse = Players.LocalPlayer:GetMouse()
+
+local Themes = {
+    ["Dark"] = {
+        Primary = Color3.fromRGB(32, 32, 32),
+        Secondary = Color3.fromRGB(26, 26, 26), 
+        Accent = Color3.fromRGB(176, 148, 255),
+        Text = Color3.fromRGB(255, 255, 255),
+        IsLight = false
+    }
+}
+
+function Library:CreateWindow(windowName, themeName)
+    windowName = windowName or "UI Library"
+    themeName = themeName or "Dark"
+    
+    local currentTheme = Themes[themeName] or Themes["Dark"]
+    
+    for _, gui in pairs(game.CoreGui:GetChildren()) do
+        if gui.Name == "ModernGUI" then
+            gui:Destroy()
+        end
+    end
+    
+    local ScreenGui = Instance.new("ScreenGui")
+    local MainFrame = Instance.new("Frame")
+    local TopBar = Instance.new("Frame")
+    local Title = Instance.new("TextLabel")
+    local CloseButton = Instance.new("TextButton")
+    local ContentFrame = Instance.new("Frame")
+    local TabContainer = Instance.new("Frame")
+    local TabScroll = Instance.new("ScrollingFrame")
+    local TabLayout = Instance.new("UIListLayout")
+    local ItemContainer = Instance.new("Frame")
+    
+    ScreenGui.Name = "ModernGUI"
+    ScreenGui.Parent = game.CoreGui
+    ScreenGui.ResetOnSpawn = false
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    MainFrame.Name = "MainFrame"
+    MainFrame.Parent = ScreenGui
+    MainFrame.BackgroundColor3 = currentTheme.Primary
+    MainFrame.BorderSizePixel = 0
+    MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
+    MainFrame.Size = UDim2.new(0, 600, 0, 400)
+    MainFrame.Active = true
+    MainFrame.Draggable = true
+    
+    local MainCorner = Instance.new("UICorner")
+    MainCorner.CornerRadius = UDim.new(0, 8)
+    MainCorner.Parent = MainFrame
+    
+    TopBar.Name = "TopBar"
+    TopBar.Parent = MainFrame
+    TopBar.BackgroundColor3 = currentTheme.Secondary
+    TopBar.BorderSizePixel = 0
+    TopBar.Size = UDim2.new(1, 0, 0, 35)
+    
+    local TopCorner = Instance.new("UICorner")
+    TopCorner.CornerRadius = UDim.new(0, 8)
+    TopCorner.Parent = TopBar
+    
+    Title.Name = "Title"
+    Title.Parent = TopBar
+    Title.BackgroundTransparency = 1
+    Title.Position = UDim2.new(0, 15, 0, 0)
+    Title.Size = UDim2.new(1, -50, 1, 0)
+    Title.Font = Enum.Font.SourceSansBold
+    Title.Text = windowName
+    Title.TextColor3 = currentTheme.Text
+    Title.TextSize = 16
+    Title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    CloseButton.Name = "CloseButton"
+    CloseButton.Parent = TopBar
+    CloseButton.BackgroundTransparency = 1
+    CloseButton.Position = UDim2.new(1, -35, 0, 5)
+    CloseButton.Size = UDim2.new(0, 25, 0, 25)
+    CloseButton.Font = Enum.Font.SourceSansBold
+    CloseButton.Text = "X"
+    CloseButton.TextColor3 = currentTheme.Text
+    CloseButton.TextSize = 18
+    
+    ContentFrame.Name = "ContentFrame"
+    ContentFrame.Parent = MainFrame
+    ContentFrame.BackgroundTransparency = 1
+    ContentFrame.Position = UDim2.new(0, 0, 0, 35)
+    ContentFrame.Size = UDim2.new(1, 0, 1, -35)
+    
+    TabContainer.Name = "TabContainer"
+    TabContainer.Parent = ContentFrame
+    TabContainer.BackgroundColor3 = currentTheme.Secondary
+    TabContainer.BorderSizePixel = 0
+    TabContainer.Position = UDim2.new(0, 10, 0, 10)
+    TabContainer.Size = UDim2.new(0, 150, 1, -20)
+    TabContainer.ClipsDescendants = true
+    
+    local TabCorner = Instance.new("UICorner")
+    TabCorner.CornerRadius = UDim.new(0, 6)
+    TabCorner.Parent = TabContainer
+    
+    TabScroll.Name = "TabScroll"
+    TabScroll.Parent = TabContainer
+    TabScroll.BackgroundTransparency = 1
+    TabScroll.BorderSizePixel = 0
+    TabScroll.Position = UDim2.new(0, 5, 0, 5)
+    TabScroll.Size = UDim2.new(1, -10, 1, -10)
+    TabScroll.ScrollBarThickness = 3
+    TabScroll.ScrollBarImageColor3 = currentTheme.Accent
+    TabScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+    TabScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    
+    TabLayout.Parent = TabScroll
+    TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    TabLayout.Padding = UDim.new(0, 5)
+    
+    ItemContainer.Name = "ItemContainer"
+    ItemContainer.Parent = ContentFrame
+    ItemContainer.BackgroundColor3 = currentTheme.Secondary
+    ItemContainer.BorderSizePixel = 0
+    ItemContainer.Position = UDim2.new(0, 170, 0, 10)
+    ItemContainer.Size = UDim2.new(1, -180, 1, -20)
+    
+    local ItemCorner = Instance.new("UICorner")
+    ItemCorner.CornerRadius = UDim.new(0, 6)
+    ItemCorner.Parent = ItemContainer
+    
+    CloseButton.MouseButton1Click:Connect(function()
+        ScreenGui:Destroy()
+    end)
+    
+    local WindowObject = {}
+    
+    function WindowObject:CreateTab(tabName)
+        tabName = tabName or "Tab"
+
+        local TabButton = Instance.new("TextButton")
+        local TabFrame = Instance.new("ScrollingFrame")
+        local ItemLayout = Instance.new("UIListLayout")
+        local TabText = Instance.new("TextLabel")
+
+        TabButton.Name = tabName .. "Button"
+        TabButton.Parent = TabScroll
+        TabButton.BackgroundColor3 = currentTheme.Primary
+        TabButton.BorderSizePixel = 0
+        TabButton.Size = UDim2.new(1, -10, 0, 35)
+        TabButton.Font = Enum.Font.SourceSansSemibold
+        TabButton.Text = ""
+        TabButton.TextColor3 = currentTheme.Text
+        TabButton.TextSize = 14
+
+        local ButtonCorner = Instance.new("UICorner")
+        ButtonCorner.CornerRadius = UDim.new(0, 4)
+        ButtonCorner.Parent = TabButton
+
+        TabText.Name = "TabText"
+        TabText.Parent = TabButton
+        TabText.BackgroundTransparency = 1
+        TabText.Position = UDim2.new(0, 10, 0, 0)
+        TabText.Size = UDim2.new(1, -20, 1, 0)
+        TabText.Font = Enum.Font.SourceSansSemibold
+        TabText.Text = tabName
+        TabText.TextColor3 = currentTheme.Text
+        TabText.TextSize = 14
+        TabText.TextXAlignment = Enum.TextXAlignment.Left
+
+        TabFrame.Name = tabName .. "Frame"
+        TabFrame.Parent = ItemContainer
+        TabFrame.BackgroundTransparency = 1
+        TabFrame.BorderSizePixel = 0
+        TabFrame.Position = UDim2.new(0, 10, 0, 10)
+        TabFrame.Size = UDim2.new(1, -20, 1, -20)
+        TabFrame.ScrollBarThickness = 3
+        TabFrame.ScrollBarImageColor3 = currentTheme.Accent
+        TabFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+        TabFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+        TabFrame.Visible = false
+
+        ItemLayout.Parent = TabFrame
+        ItemLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        ItemLayout.Padding = UDim.new(0, 8)
+        
+        ItemLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            TabFrame.CanvasSize = UDim2.new(0, 0, 0, ItemLayout.AbsoluteContentSize.Y + 10)
+        end)
+
+        TabButton.MouseButton1Click:Connect(function()
+            for _, child in pairs(ItemContainer:GetChildren()) do
+                if child:IsA("ScrollingFrame") then
+                    child.Visible = false
+                end
+            end
+
+            for _, child in pairs(TabScroll:GetChildren()) do
+                if child:IsA("TextButton") then
+                    TweenService:Create(child, TweenInfo.new(0.15), {
+                        BackgroundColor3 = currentTheme.Primary,
+                        TextColor3 = currentTheme.Text
+                    }):Play()
+                end
+            end
+
+            TabFrame.Visible = true
+            TweenService:Create(TabButton, TweenInfo.new(0.15), {
+                BackgroundColor3 = currentTheme.Accent,
+                TextColor3 = currentTheme.IsLight and currentTheme.Primary or Color3.fromRGB(255, 255, 255)
+            }):Play()
+        end)
+
+        local TabObject = {}
+
+        function TabObject:CreateLabel(labelText)
+            labelText = labelText or "Label"
+            
+            local LabelFrame = Instance.new("Frame")
+            local Label = Instance.new("TextLabel")
+            local Padding = Instance.new("UIPadding")
+            
+            LabelFrame.Name = "LabelFrame"
+            LabelFrame.Parent = TabFrame
+            LabelFrame.BackgroundColor3 = currentTheme.Primary
+            LabelFrame.BorderSizePixel = 0
+            LabelFrame.Size = UDim2.new(1, 0, 0, 35)
+            
+            local Corner = Instance.new("UICorner")
+            Corner.CornerRadius = UDim.new(0, 4)
+            Corner.Parent = LabelFrame
+            
+            Padding.Parent = LabelFrame
+            Padding.PaddingLeft = UDim.new(0, 10)
+            
+            Label.Name = "Label"
+            Label.Parent = LabelFrame
+            Label.BackgroundTransparency = 1
+            Label.Size = UDim2.new(1, -10, 1, 0)
+            Label.Font = Enum.Font.SourceSansSemibold
+            Label.Text = labelText
+            Label.TextColor3 = currentTheme.Text
+            Label.TextSize = 14
+            Label.TextXAlignment = Enum.TextXAlignment.Left
+            
+            return {
+                SetText = function(newText)
+                    Label.Text = newText or ""
+                end,
+                SetColor = function(color)
+                    Label.TextColor3 = color or currentTheme.Text
+                end,
+                SetBackground = function(color)
+                    LabelFrame.BackgroundColor3 = color or currentTheme.Primary
+                end
+            }
+        end
+        
+        function TabObject:Paragraph(text)
+            text = text or "Sample paragraph text..."
+            
+            local ParagraphFrame = Instance.new("Frame")
+            local ParagraphLabel = Instance.new("TextLabel")
+            local Padding = Instance.new("UIPadding")
+            
+            ParagraphFrame.Name = "ParagraphFrame"
+            ParagraphFrame.Parent = TabFrame
+            ParagraphFrame.BackgroundColor3 = currentTheme.Primary
+            ParagraphFrame.BorderSizePixel = 0
+            ParagraphFrame.Size = UDim2.new(1, 0, 0, 0)
+            ParagraphFrame.AutomaticSize = Enum.AutomaticSize.Y
+            
+            local Corner = Instance.new("UICorner")
+            Corner.CornerRadius = UDim.new(0, 4)
+            Corner.Parent = ParagraphFrame
+            
+            Padding.Parent = ParagraphFrame
+            Padding.PaddingLeft = UDim.new(0, 10)
+            Padding.PaddingRight = UDim.new(0, 10)
+            Padding.PaddingTop = UDim.new(0, 10)
+            Padding.PaddingBottom = UDim.new(0, 10)
+            
+            ParagraphLabel.Name = "Label"
+            ParagraphLabel.Parent = ParagraphFrame
+            ParagraphLabel.BackgroundTransparency = 1
+            ParagraphLabel.Size = UDim2.new(1, -20, 0, 0)
+            ParagraphLabel.Font = Enum.Font.SourceSans
+            ParagraphLabel.Text = text
+            ParagraphLabel.TextColor3 = currentTheme.Text
+            ParagraphLabel.TextSize = 14
+            ParagraphLabel.TextWrapped = true
+            ParagraphLabel.TextXAlignment = Enum.TextXAlignment.Left
+            ParagraphLabel.AutomaticSize = Enum.AutomaticSize.Y
+            
+            return {
+                SetText = function(newText)
+                    ParagraphLabel.Text = newText or ""
+                end
+            }
+        end
+
+        -- Select first tab automatically
+        if #TabScroll:GetChildren() == 1 then
+            wait()
+            TabButton:Fire("MouseButton1Click")
+        end
+
+        TabScroll.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y + 10)
+        
+        return TabObject
+    end
+    
+    return WindowObject
+end
+
+return Library
