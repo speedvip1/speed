@@ -1,263 +1,583 @@
-local RedzLib = {}
-
--- Services
+local Library = {}
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local HttpService = game:GetService("HttpService")
+local Mouse = Players.LocalPlayer:GetMouse()
 
--- Discord-style tween presets
-local TweenPresets = {
-    Discord = {
-        Open = TweenInfo.new(0.3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
-        Close = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.In),
-        Hover = TweenInfo.new(0.15, Enum.EasingStyle.Linear),
-        Toggle = TweenInfo.new(0.2, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+local Themes = {
+    ["Dark"] = {
+        Primary = Color3.fromRGB(32, 32, 32),
+        Secondary = Color3.fromRGB(26, 26, 26), 
+        Accent = Color3.fromRGB(176, 148, 255),
+        Text = Color3.fromRGB(255, 255, 255),
+        IsLight = false
+    },
+    ["Discord"] = {
+        Primary = Color3.fromRGB(54, 57, 63),
+        Secondary = Color3.fromRGB(47, 49, 54),
+        Accent = Color3.fromRGB(88, 101, 242),
+        Text = Color3.fromRGB(220, 221, 222),
+        IsLight = false
     }
 }
 
--- Utility functions
-local function Create(instanceType, properties)
-    local instance = Instance.new(instanceType)
-    for property, value in pairs(properties) do
-        instance[property] = value
+function Library:CreateWindow(windowName, themeName)
+    windowName = windowName or "UI Library"
+    themeName = themeName or "Dark"
+    
+    local currentTheme = Themes[themeName] or Themes["Dark"]
+    
+    for _, gui in pairs(game.CoreGui:GetChildren()) do
+        if gui.Name == "ModernGUI" then
+            gui:Destroy()
+        end
     end
-    return instance
-end
-
-local function DiscordTween(instance, properties, preset)
-    local tweenInfo = TweenPresets.Discord[preset] or TweenInfo.new(0.3)
-    local tween = TweenService:Create(instance, tweenInfo, properties)
-    tween:Play()
-    return tween
-end
-
--- Library initialization
-function RedzLib:Init()
-    local ScreenGui = Create("ScreenGui", {
-        Parent = game.CoreGui,
-        Name = "RedzLibUI"
-    })
-
-    self.ScreenGui = ScreenGui
-    return self
-end
-
--- Window creation
-function RedzLib:CreateWindow(options)
-    local window = {
-        Title = options.Title or "RedzLib Window",
-        Size = options.Size or UDim2.new(0, 400, 0, 500),
-        Position = options.Position or UDim2.new(0.5, -200, 0.5, -250)
-    }
-
-    local MainFrame = Create("Frame", {
-        Parent = self.ScreenGui,
-        Size = window.Size,
-        Position = window.Position,
-        BackgroundColor3 = Color3.fromRGB(54, 57, 63),
-        AnchorPoint = Vector2.new(0.5, 0.5)
-    })
-
-    local TopBar = Create("Frame", {
-        Parent = MainFrame,
-        Size = UDim2.new(1, 0, 0, 40),
-        BackgroundColor3 = Color3.fromRGB(47, 49, 54),
-        BorderSizePixel = 0
-    })
-
-    local TitleLabel = Create("TextLabel", {
-        Parent = TopBar,
-        Text = window.Title,
-        TextColor3 = Color3.fromRGB(255, 255, 255),
-        Font = Enum.Font.GothamSemibold,
-        TextSize = 14,
-        Position = UDim2.new(0, 15, 0.5, -7),
-        AnchorPoint = Vector2.new(0, 0.5),
-        BackgroundTransparency = 1
-    })
-
-    -- Discord-style close button
-    local CloseButton = Create("TextButton", {
-        Parent = TopBar,
-        Text = "×",
-        TextColor3 = Color3.fromRGB(220, 220, 220),
-        Font = Enum.Font.GothamBold,
-        TextSize = 18,
-        Size = UDim2.new(0, 32, 0, 32),
-        Position = UDim2.new(1, -32, 0.5, -16),
-        AnchorPoint = Vector2.new(1, 0.5),
-        BackgroundTransparency = 1
-    })
-
-    CloseButton.MouseEnter:Connect(function()
-        DiscordTween(CloseButton, {TextColor3 = Color3.fromRGB(255, 255, 255)}, "Hover")
+    
+    local ScreenGui = Instance.new("ScreenGui")
+    local MainFrame = Instance.new("Frame")
+    local TopBar = Instance.new("Frame")
+    local Title = Instance.new("TextLabel")
+    local CloseButton = Instance.new("TextButton")
+    local ContentFrame = Instance.new("Frame")
+    local TabContainer = Instance.new("Frame")
+    local TabScroll = Instance.new("ScrollingFrame")
+    local TabLayout = Instance.new("UIListLayout")
+    local ItemContainer = Instance.new("Frame")
+    
+    ScreenGui.Name = "ModernGUI"
+    ScreenGui.Parent = game.CoreGui
+    ScreenGui.ResetOnSpawn = false
+    ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    
+    MainFrame.Name = "MainFrame"
+    MainFrame.Parent = ScreenGui
+    MainFrame.BackgroundColor3 = currentTheme.Primary
+    MainFrame.BorderSizePixel = 0
+    MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
+    MainFrame.Size = UDim2.new(0, 600, 0, 400)
+    MainFrame.Active = true
+    MainFrame.Draggable = true
+    
+    local MainCorner = Instance.new("UICorner")
+    MainCorner.CornerRadius = UDim.new(0, 8)
+    MainCorner.Parent = MainFrame
+    
+    TopBar.Name = "TopBar"
+    TopBar.Parent = MainFrame
+    TopBar.BackgroundColor3 = currentTheme.Secondary
+    TopBar.BorderSizePixel = 0
+    TopBar.Size = UDim2.new(1, 0, 0, 35)
+    
+    local TopCorner = Instance.new("UICorner")
+    TopCorner.CornerRadius = UDim.new(0, 8)
+    TopCorner.Parent = TopBar
+    
+    Title.Name = "Title"
+    Title.Parent = TopBar
+    Title.BackgroundTransparency = 1
+    Title.Position = UDim2.new(0, 15, 0, 0)
+    Title.Size = UDim2.new(1, -50, 1, 0)
+    Title.Font = Enum.Font.SourceSansBold
+    Title.Text = windowName
+    Title.TextColor3 = currentTheme.Text
+    Title.TextSize = 16
+    Title.TextXAlignment = Enum.TextXAlignment.Left
+    
+    CloseButton.Name = "CloseButton"
+    CloseButton.Parent = TopBar
+    CloseButton.BackgroundTransparency = 1
+    CloseButton.Position = UDim2.new(1, -35, 0, 5)
+    CloseButton.Size = UDim2.new(0, 25, 0, 25)
+    CloseButton.Font = Enum.Font.SourceSansBold
+    CloseButton.Text = "X"
+    CloseButton.TextColor3 = currentTheme.Text
+    CloseButton.TextSize = 18
+    
+    ContentFrame.Name = "ContentFrame"
+    ContentFrame.Parent = MainFrame
+    ContentFrame.BackgroundTransparency = 1
+    ContentFrame.Position = UDim2.new(0, 0, 0, 35)
+    ContentFrame.Size = UDim2.new(1, 0, 1, -35)
+    
+    TabContainer.Name = "TabContainer"
+    TabContainer.Parent = ContentFrame
+    TabContainer.BackgroundColor3 = currentTheme.Secondary
+    TabContainer.BorderSizePixel = 0
+    TabContainer.Position = UDim2.new(0, 10, 0, 10)
+    TabContainer.Size = UDim2.new(0, 150, 1, -20)
+    TabContainer.ClipsDescendants = true
+    
+    local TabCorner = Instance.new("UICorner")
+    TabCorner.CornerRadius = UDim.new(0, 6)
+    TabCorner.Parent = TabContainer
+    
+    TabScroll.Name = "TabScroll"
+    TabScroll.Parent = TabContainer
+    TabScroll.BackgroundTransparency = 1
+    TabScroll.BorderSizePixel = 0
+    TabScroll.Position = UDim2.new(0, 5, 0, 5)
+    TabScroll.Size = UDim2.new(1, -10, 1, -10)
+    TabScroll.ScrollBarThickness = 3
+    TabScroll.ScrollBarImageColor3 = currentTheme.Accent
+    TabScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+    TabScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    
+    TabLayout.Parent = TabScroll
+    TabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    TabLayout.Padding = UDim.new(0, 5)
+    
+    ItemContainer.Name = "ItemContainer"
+    ItemContainer.Parent = ContentFrame
+    ItemContainer.BackgroundColor3 = currentTheme.Secondary
+    ItemContainer.BorderSizePixel = 0
+    ItemContainer.Position = UDim2.new(0, 170, 0, 10)
+    ItemContainer.Size = UDim2.new(1, -180, 1, -20)
+    
+    local ItemCorner = Instance.new("UICorner")
+    ItemCorner.CornerRadius = UDim.new(0, 6)
+    ItemCorner.Parent = ItemContainer
+    
+    CloseButton.MouseButton1Click:Connect(function()
+        ScreenGui:Destroy()
     end)
+    
+    local WindowObject = {}
+    
+    function WindowObject:CreateTab(tabName)
+        tabName = tabName or "Tab"
 
-    CloseButton.MouseLeave:Connect(function()
-        DiscordTween(CloseButton, {TextColor3 = Color3.fromRGB(220, 220, 220)}, "Hover")
-    end)
+        local TabButton = Instance.new("TextButton")
+        local TabFrame = Instance.new("ScrollingFrame")
+        local ItemLayout = Instance.new("UIListLayout")
+        local TabText = Instance.new("TextLabel")
 
-    CloseButton.Activated:Connect(function()
-        DiscordTween(MainFrame, {Size = UDim2.new(0, 0, 0, 0)}, "Close").Completed:Wait()
-        MainFrame:Destroy()
-    end)
+        TabButton.Name = tabName .. "Button"
+        TabButton.Parent = TabScroll
+        TabButton.BackgroundColor3 = currentTheme.Primary
+        TabButton.BorderSizePixel = 0
+        TabButton.Size = UDim2.new(1, -10, 0, 35)
+        TabButton.Font = Enum.Font.SourceSansSemibold
+        TabButton.Text = ""
+        TabButton.TextColor3 = currentTheme.Text
+        TabButton.TextSize = 14
 
-    -- Tab system
-    local TabContainer = Create("Frame", {
-        Parent = MainFrame,
-        Size = UDim2.new(1, 0, 1, -40),
-        Position = UDim2.new(0, 0, 0, 40),
-        BackgroundTransparency = 1
-    })
+        local ButtonCorner = Instance.new("UICorner")
+        ButtonCorner.CornerRadius = UDim.new(0, 4)
+        ButtonCorner.Parent = TabButton
 
-    local TabButtons = Create("ScrollingFrame", {
-        Parent = MainFrame,
-        Size = UDim2.new(0, 120, 1, -40),
-        Position = UDim2.new(0, 0, 0, 40),
-        BackgroundColor3 = Color3.fromRGB(47, 49, 54),
-        ScrollBarThickness = 0,
-        BorderSizePixel = 0
-    })
+        TabText.Name = "TabText"
+        TabText.Parent = TabButton
+        TabText.BackgroundTransparency = 1
+        TabText.Position = UDim2.new(0, 10, 0, 0)
+        TabText.Size = UDim2.new(1, -20, 1, 0)
+        TabText.Font = Enum.Font.SourceSansSemibold
+        TabText.Text = tabName
+        TabText.TextColor3 = currentTheme.Text
+        TabText.TextSize = 14
+        TabText.TextXAlignment = Enum.TextXAlignment.Left
 
-    local UIListLayout = Create("UIListLayout", {
-        Parent = TabButtons,
-        Padding = UDim.new(0, 5)
-    })
+        TabFrame.Name = tabName .. "Frame"
+        TabFrame.Parent = ItemContainer
+        TabFrame.BackgroundTransparency = 1
+        TabFrame.BorderSizePixel = 0
+        TabFrame.Position = UDim2.new(0, 10, 0, 10)
+        TabFrame.Size = UDim2.new(1, -20, 1, -20)
+        TabFrame.ScrollBarThickness = 3
+        TabFrame.ScrollBarImageColor3 = currentTheme.Accent
+        TabFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+        TabFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+        TabFrame.Visible = false
 
-    -- Window methods
-    function window:AddTab(tabName)
-        local tab = {
-            Name = tabName or "New Tab"
-        }
-
-        local TabButton = Create("TextButton", {
-            Parent = TabButtons,
-            Text = tab.Name,
-            Size = UDim2.new(1, -10, 0, 32),
-            BackgroundColor3 = Color3.fromRGB(66, 70, 77),
-            TextColor3 = Color3.fromRGB(220, 220, 220),
-            Font = Enum.Font.Gotham,
-            TextSize = 12
-        })
-
-        local TabContent = Create("ScrollingFrame", {
-            Parent = TabContainer,
-            Size = UDim2.new(1, -120, 1, 0),
-            Position = UDim2.new(0, 120, 0, 0),
-            BackgroundTransparency = 1,
-            ScrollBarThickness = 3,
-            Visible = false
-        })
-
-        local ContentLayout = Create("UIListLayout", {
-            Parent = TabContent,
-            Padding = UDim.new(0, 10)
-        })
-
-        -- Tab button interactions
-        TabButton.MouseEnter:Connect(function()
-            DiscordTween(TabButton, {BackgroundColor3 = Color3.fromRGB(78, 82, 90)}, "Hover")
+        ItemLayout.Parent = TabFrame
+        ItemLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        ItemLayout.Padding = UDim.new(0, 8)
+        
+        ItemLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+            TabFrame.CanvasSize = UDim2.new(0, 0, 0, ItemLayout.AbsoluteContentSize.Y + 10)
         end)
 
-        TabButton.MouseLeave:Connect(function()
-            DiscordTween(TabButton, {BackgroundColor3 = Color3.fromRGB(66, 70, 77)}, "Hover")
-        end)
-
-        TabButton.Activated:Connect(function()
-            for _, content in pairs(TabContainer:GetChildren()) do
-                if content:IsA("ScrollingFrame") then
-                    content.Visible = false
+        TabButton.MouseButton1Click:Connect(function()
+            for _, child in pairs(ItemContainer:GetChildren()) do
+                if child:IsA("ScrollingFrame") then
+                    child.Visible = false
                 end
             end
-            TabContent.Visible = true
-            DiscordTween(TabButton, {BackgroundColor3 = Color3.fromRGB(88, 101, 242)}, "Toggle")
+
+            for _, child in pairs(TabScroll:GetChildren()) do
+                if child:IsA("TextButton") then
+                    TweenService:Create(child, TweenInfo.new(0.15), {
+                        BackgroundColor3 = currentTheme.Primary,
+                        TextColor3 = currentTheme.Text
+                    }):Play()
+                end
+            end
+
+            TabFrame.Visible = true
+            TweenService:Create(TabButton, TweenInfo.new(0.15), {
+                BackgroundColor3 = currentTheme.Accent,
+                TextColor3 = currentTheme.IsLight and currentTheme.Primary or Color3.fromRGB(255, 255, 255)
+            }):Play()
         end)
 
-        -- Tab methods
-        function tab:AddToggle(options)
-            local toggle = {
-                Name = options.Name or "Toggle",
-                Default = options.Default or false,
-                Callback = options.Callback or function() end
+        local TabObject = {}
+
+        function TabObject:CreateLabel(labelText)
+            labelText = labelText or "Label"
+            
+            local LabelFrame = Instance.new("Frame")
+            local Label = Instance.new("TextLabel")
+            local Padding = Instance.new("UIPadding")
+            
+            LabelFrame.Name = "LabelFrame"
+            LabelFrame.Parent = TabFrame
+            LabelFrame.BackgroundColor3 = currentTheme.Primary
+            LabelFrame.BorderSizePixel = 0
+            LabelFrame.Size = UDim2.new(1, 0, 0, 35)
+            
+            local Corner = Instance.new("UICorner")
+            Corner.CornerRadius = UDim.new(0, 4)
+            Corner.Parent = LabelFrame
+            
+            Padding.Parent = LabelFrame
+            Padding.PaddingLeft = UDim.new(0, 10)
+            
+            Label.Name = "Label"
+            Label.Parent = LabelFrame
+            Label.BackgroundTransparency = 1
+            Label.Size = UDim2.new(1, -10, 1, 0)
+            Label.Font = Enum.Font.SourceSansSemibold
+            Label.Text = labelText
+            Label.TextColor3 = currentTheme.Text
+            Label.TextSize = 14
+            Label.TextXAlignment = Enum.TextXAlignment.Left
+            
+            return {
+                SetText = function(newText)
+                    Label.Text = newText or ""
+                end,
+                SetColor = function(color)
+                    Label.TextColor3 = color or currentTheme.Text
+                end,
+                SetBackground = function(color)
+                    LabelFrame.BackgroundColor3 = color or currentTheme.Primary
+                end
             }
-
-            local ToggleFrame = Create("Frame", {
-                Parent = TabContent,
-                Size = UDim2.new(1, -20, 0, 32),
-                BackgroundColor3 = Color3.fromRGB(66, 70, 77),
-                BackgroundTransparency = 0.5
-            })
-
-            local ToggleLabel = Create("TextLabel", {
-                Parent = ToggleFrame,
-                Text = toggle.Name,
-                TextColor3 = Color3.fromRGB(220, 220, 220),
-                Font = Enum.Font.Gotham,
-                TextSize = 12,
-                Size = UDim2.new(0.7, 0, 1, 0),
-                BackgroundTransparency = 1,
-                TextXAlignment = Enum.TextXAlignment.Left
-            })
-
-            local ToggleButton = Create("Frame", {
-                Parent = ToggleFrame,
-                Size = UDim2.new(0, 40, 0, 20),
-                Position = UDim2.new(1, -10, 0.5, -10),
-                AnchorPoint = Vector2.new(1, 0.5),
-                BackgroundColor3 = Color3.fromRGB(47, 49, 54)
-            })
-
-            local ToggleCircle = Create("Frame", {
-                Parent = ToggleButton,
-                Size = UDim2.new(0, 16, 0, 16),
-                Position = toggle.Default and UDim2.new(1, -8, 0.5, -8) or UDim2.new(0, 4, 0.5, -8),
-                AnchorPoint = Vector2.new(0.5, 0.5),
-                BackgroundColor3 = toggle.Default and Color3.fromRGB(88, 101, 242) or Color3.fromRGB(220, 220, 220)
-            })
-
-            -- Toggle functionality
-            local state = toggle.Default
-
-            local function UpdateToggle()
-                DiscordTween(ToggleCircle, {
-                    Position = state and UDim2.new(1, -8, 0.5, -8) or UDim2.new(0, 4, 0.5, -8),
-                    BackgroundColor3 = state and Color3.fromRGB(88, 101, 242) or Color3.fromRGB(220, 220, 220)
-                }, "Toggle")
-                
-                toggle.Callback(state)
-            end
-
-            ToggleFrame.InputBegan:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    state = not state
-                    UpdateToggle()
-                end
+        end
+        
+        function TabObject:CreateButton(buttonText, callback)
+            buttonText = buttonText or "Button"
+            callback = callback or function() end
+            
+            local ButtonFrame = Instance.new("Frame")
+            local Button = Instance.new("TextButton")
+            local Padding = Instance.new("UIPadding")
+            
+            ButtonFrame.Name = "ButtonFrame"
+            ButtonFrame.Parent = TabFrame
+            ButtonFrame.BackgroundTransparency = 1
+            ButtonFrame.Size = UDim2.new(1, 0, 0, 35)
+            
+            Padding.Parent = ButtonFrame
+            Padding.PaddingLeft = UDim.new(0, 0)
+            Padding.PaddingRight = UDim.new(0, 0)
+            
+            Button.Name = "Button"
+            Button.Parent = ButtonFrame
+            Button.BackgroundColor3 = currentTheme.Accent
+            Button.BorderSizePixel = 0
+            Button.Size = UDim2.new(1, 0, 1, 0)
+            Button.Font = Enum.Font.SourceSansSemibold
+            Button.Text = buttonText
+            Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Button.TextSize = 14
+            
+            local Corner = Instance.new("UICorner")
+            Corner.CornerRadius = UDim.new(0, 4)
+            Corner.Parent = Button
+            
+            local originalColor = currentTheme.Accent
+            local hoverColor = Color3.fromRGB(
+                math.min(255, originalColor.R * 255 + 20),
+                math.min(255, originalColor.G * 255 + 20),
+                math.min(255, originalColor.B * 255 + 20)
+            )
+            
+            Button.MouseEnter:Connect(function()
+                TweenService:Create(Button, TweenInfo.new(0.15), {
+                    BackgroundColor3 = hoverColor
+                }):Play()
             end)
-
-            -- Toggle methods
-            function toggle:Set(value)
-                if state ~= value then
-                    state = value
-                    UpdateToggle()
+            
+            Button.MouseLeave:Connect(function()
+                TweenService:Create(Button, TweenInfo.new(0.15), {
+                    BackgroundColor3 = originalColor
+                }):Play()
+            end)
+            
+            Button.MouseButton1Click:Connect(function()
+                TweenService:Create(Button, TweenInfo.new(0.1), {
+                    Size = UDim2.new(0.95, 0, 0.9, 0)
+                }):Play()
+                
+                wait(0.1)
+                
+                TweenService:Create(Button, TweenInfo.new(0.1), {
+                    Size = UDim2.new(1, 0, 1, 0)
+                }):Play()
+                
+                callback()
+            end)
+            
+            return {
+                SetText = function(newText)
+                    Button.Text = newText or ""
+                end,
+                SetCallback = function(newCallback)
+                    callback = newCallback or function() end
+                end,
+                SetColor = function(color)
+                    originalColor = color or currentTheme.Accent
+                    Button.BackgroundColor3 = originalColor
+                    hoverColor = Color3.fromRGB(
+                        math.min(255, originalColor.R * 255 + 20),
+                        math.min(255, originalColor.G * 255 + 20),
+                        math.min(255, originalColor.B * 255 + 20)
+                    )
                 end
-            end
-
-            function toggle:Get()
-                return state
-            end
-
-            return toggle
+            }
+        end
+        
+        function TabObject:CreateTextBox(placeholderText, callback)
+            placeholderText = placeholderText or "Enter text..."
+            callback = callback or function() end
+            
+            local TextBoxFrame = Instance.new("Frame")
+            local TextBox = Instance.new("TextBox")
+            local Padding = Instance.new("UIPadding")
+            
+            TextBoxFrame.Name = "TextBoxFrame"
+            TextBoxFrame.Parent = TabFrame
+            TextBoxFrame.BackgroundColor3 = currentTheme.Primary
+            TextBoxFrame.BorderSizePixel = 0
+            TextBoxFrame.Size = UDim2.new(1, 0, 0, 35)
+            
+            local Corner = Instance.new("UICorner")
+            Corner.CornerRadius = UDim.new(0, 4)
+            Corner.Parent = TextBoxFrame
+            
+            Padding.Parent = TextBoxFrame
+            Padding.PaddingLeft = UDim.new(0, 10)
+            Padding.PaddingRight = UDim.new(0, 10)
+            
+            TextBox.Name = "TextBox"
+            TextBox.Parent = TextBoxFrame
+            TextBox.BackgroundTransparency = 1
+            TextBox.Size = UDim2.new(1, -20, 1, 0)
+            TextBox.Font = Enum.Font.SourceSans
+            TextBox.PlaceholderText = placeholderText
+            TextBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
+            TextBox.Text = ""
+            TextBox.TextColor3 = currentTheme.Text
+            TextBox.TextSize = 14
+            TextBox.TextXAlignment = Enum.TextXAlignment.Left
+            TextBox.ClearTextOnFocus = false
+            
+            local focusColor = currentTheme.Accent
+            local unfocusColor = currentTheme.Primary
+            
+            TextBox.Focused:Connect(function()
+                TweenService:Create(TextBoxFrame, TweenInfo.new(0.15), {
+                    BackgroundColor3 = Color3.fromRGB(
+                        math.min(255, focusColor.R * 255 * 0.3 + unfocusColor.R * 255 * 0.7),
+                        math.min(255, focusColor.G * 255 * 0.3 + unfocusColor.G * 255 * 0.7),
+                        math.min(255, focusColor.B * 255 * 0.3 + unfocusColor.B * 255 * 0.7)
+                    )
+                }):Play()
+            end)
+            
+            TextBox.FocusLost:Connect(function()
+                TweenService:Create(TextBoxFrame, TweenInfo.new(0.15), {
+                    BackgroundColor3 = unfocusColor
+                }):Play()
+                callback(TextBox.Text)
+            end)
+            
+            return {
+                GetText = function()
+                    return TextBox.Text
+                end,
+                SetText = function(newText)
+                    TextBox.Text = newText or ""
+                end,
+                SetPlaceholder = function(newPlaceholder)
+                    TextBox.PlaceholderText = newPlaceholder or ""
+                end,
+                SetCallback = function(newCallback)
+                    callback = newCallback or function() end
+                end
+            }
+        end
+        
+        function TabObject:CreateToggle(toggleText, defaultState, callback)
+            toggleText = toggleText or "Toggle"
+            defaultState = defaultState or false
+            callback = callback or function() end
+            
+            local ToggleFrame = Instance.new("Frame")
+            local ToggleLabel = Instance.new("TextLabel")
+            local ToggleButton = Instance.new("TextButton")
+            local ToggleIndicator = Instance.new("Frame")
+            local ToggleCircle = Instance.new("Frame")
+            local Padding = Instance.new("UIPadding")
+            
+            ToggleFrame.Name = "ToggleFrame"
+            ToggleFrame.Parent = TabFrame
+            ToggleFrame.BackgroundColor3 = currentTheme.Primary
+            ToggleFrame.BorderSizePixel = 0
+            ToggleFrame.Size = UDim2.new(1, 0, 0, 35)
+            
+            local Corner = Instance.new("UICorner")
+            Corner.CornerRadius = UDim.new(0, 4)
+            Corner.Parent = ToggleFrame
+            
+            Padding.Parent = ToggleFrame
+            Padding.PaddingLeft = UDim.new(0, 10)
+            Padding.PaddingRight = UDim.new(0, 10)
+            
+            ToggleLabel.Name = "Label"
+            ToggleLabel.Parent = ToggleFrame
+            ToggleLabel.BackgroundTransparency = 1
+            ToggleLabel.Position = UDim2.new(0, 0, 0, 0)
+            ToggleLabel.Size = UDim2.new(1, -60, 1, 0)
+            ToggleLabel.Font = Enum.Font.SourceSansSemibold
+            ToggleLabel.Text = toggleText
+            ToggleLabel.TextColor3 = currentTheme.Text
+            ToggleLabel.TextSize = 14
+            ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+            
+            ToggleButton.Name = "ToggleButton"
+            ToggleButton.Parent = ToggleFrame
+            ToggleButton.BackgroundTransparency = 1
+            ToggleButton.Position = UDim2.new(1, -50, 0, 7.5)
+            ToggleButton.Size = UDim2.new(0, 40, 0, 20)
+            ToggleButton.Text = ""
+            
+            ToggleIndicator.Name = "Indicator"
+            ToggleIndicator.Parent = ToggleButton
+            ToggleIndicator.BackgroundColor3 = defaultState and currentTheme.Accent or Color3.fromRGB(100, 100, 100)
+            ToggleIndicator.BorderSizePixel = 0
+            ToggleIndicator.Size = UDim2.new(1, 0, 1, 0)
+            
+            local IndicatorCorner = Instance.new("UICorner")
+            IndicatorCorner.CornerRadius = UDim.new(0, 10)
+            IndicatorCorner.Parent = ToggleIndicator
+            
+            ToggleCircle.Name = "Circle"
+            ToggleCircle.Parent = ToggleIndicator
+            ToggleCircle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            ToggleCircle.BorderSizePixel = 0
+            ToggleCircle.Position = defaultState and UDim2.new(1, -18, 0, 2) or UDim2.new(0, 2, 0, 2)
+            ToggleCircle.Size = UDim2.new(0, 16, 0, 16)
+            
+            local CircleCorner = Instance.new("UICorner")
+            CircleCorner.CornerRadius = UDim.new(0, 8)
+            CircleCorner.Parent = ToggleCircle
+            
+            local isToggled = defaultState
+            
+            ToggleButton.MouseButton1Click:Connect(function()
+                isToggled = not isToggled
+                
+                local targetColor = isToggled and currentTheme.Accent or Color3.fromRGB(100, 100, 100)
+                local targetPosition = isToggled and UDim2.new(1, -18, 0, 2) or UDim2.new(0, 2, 0, 2)
+                
+                TweenService:Create(ToggleIndicator, TweenInfo.new(0.2), {
+                    BackgroundColor3 = targetColor
+                }):Play()
+                
+                TweenService:Create(ToggleCircle, TweenInfo.new(0.2), {
+                    Position = targetPosition
+                }):Play()
+                
+                callback(isToggled)
+            end)
+            
+            return {
+                SetState = function(state)
+                    isToggled = state
+                    local targetColor = isToggled and currentTheme.Accent or Color3.fromRGB(100, 100, 100)
+                    local targetPosition = isToggled and UDim2.new(1, -18, 0, 2) or UDim2.new(0, 2, 0, 2)
+                    
+                    ToggleIndicator.BackgroundColor3 = targetColor
+                    ToggleCircle.Position = targetPosition
+                end,
+                GetState = function()
+                    return isToggled
+                end,
+                SetText = function(newText)
+                    ToggleLabel.Text = newText or ""
+                end,
+                SetCallback = function(newCallback)
+                    callback = newCallback or function() end
+                end
+            }
+        end
+        
+        function TabObject:Paragraph(text)
+            text = text or "Sample paragraph text..."
+            
+            local ParagraphFrame = Instance.new("Frame")
+            local ParagraphLabel = Instance.new("TextLabel")
+            local Padding = Instance.new("UIPadding")
+            
+            ParagraphFrame.Name = "ParagraphFrame"
+            ParagraphFrame.Parent = TabFrame
+            ParagraphFrame.BackgroundColor3 = currentTheme.Primary
+            ParagraphFrame.BorderSizePixel = 0
+            ParagraphFrame.Size = UDim2.new(1, 0, 0, 0)
+            ParagraphFrame.AutomaticSize = Enum.AutomaticSize.Y
+            
+            local Corner = Instance.new("UICorner")
+            Corner.CornerRadius = UDim.new(0, 4)
+            Corner.Parent = ParagraphFrame
+            
+            Padding.Parent = ParagraphFrame
+            Padding.PaddingLeft = UDim.new(0, 10)
+            Padding.PaddingRight = UDim.new(0, 10)
+            Padding.PaddingTop = UDim.new(0, 10)
+            Padding.PaddingBottom = UDim.new(0, 10)
+            
+            ParagraphLabel.Name = "Label"
+            ParagraphLabel.Parent = ParagraphFrame
+            ParagraphLabel.BackgroundTransparency = 1
+            ParagraphLabel.Size = UDim2.new(1, -20, 0, 0)
+            ParagraphLabel.Font = Enum.Font.SourceSans
+            ParagraphLabel.Text = text
+            ParagraphLabel.TextColor3 = currentTheme.Text
+            ParagraphLabel.TextSize = 14
+            ParagraphLabel.TextWrapped = true
+            ParagraphLabel.TextXAlignment = Enum.TextXAlignment.Left
+            ParagraphLabel.AutomaticSize = Enum.AutomaticSize.Y
+            
+            return {
+                SetText = function(newText)
+                    ParagraphLabel.Text = newText or ""
+                end
+            }
         end
 
-        return tab
+        if #TabScroll:GetChildren() == 1 then
+            wait()
+            TabButton.MouseButton1Click:Fire()
+        end
+
+        TabScroll.CanvasSize = UDim2.new(0, 0, 0, TabLayout.AbsoluteContentSize.Y + 10)
+        
+        return TabObject
     end
-
-    -- Initial animation
-    MainFrame.Size = UDim2.new(0, 0, 0, 0)
-    DiscordTween(MainFrame, {Size = window.Size}, "Open")
-
-    return window
+    
+    return WindowObject
 end
 
-return RedzLib
+return Library
